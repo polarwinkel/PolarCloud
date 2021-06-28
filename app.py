@@ -24,7 +24,6 @@ app = Flask(__name__)
 settings = settingsio.settingsIo(setfile)
 
 pages = load.loadFolder(folder)
-print(json.dumps(pages, indent = 4))
 host = settings.get('host')
 debug = settings.get('debug')
 # extensions to be used by python-markdown:

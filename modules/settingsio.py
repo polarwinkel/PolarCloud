@@ -23,9 +23,7 @@ class settingsIo:
     
     def get(self, key):
         '''returns the value to a settings key'''
-        if key=='dbfile':
-            return self.s['dbfile']
-        elif key=='host':
+        if key=='host':
             return self.s['host']
         elif key=='debug':
             return self.s['debug']

@@ -38,14 +38,29 @@
 <script src="{{ relroot }}static/polalert.js"></script>
 <script>
     var pagelist = {{ pagelist|safe }};
-    
-    function loadPagelist() {
-        result = '<h2>Seiten</h2><ul>\n';
-        
-        Object.keys(pagelist["."]).forEach(function(key) {
-            var value = pagelist["."][key];
-            result += '<li><a href="pages/'+value.name+value.ext+'">'+value.name+'</a></li>\n';
+    function renderPagetree(tree, subpath) {
+        var result = '';
+        Object.keys(tree).forEach(function(key) {
+            if (key == '.') {
+                Object.keys(tree["."]).forEach(function(subkey) {
+                    var value = tree["."][subkey];
+                    result += '<li>'
+                    result += '<a href="pages/'+subpath+value.name+value.ext+'">'+value.name+'</a>'
+                    result += '</li>\n';
+                });
+            } else {
+                result += '<li>';
+                result += '<details><summary>'+key+'</summary><ul>';
+                result += renderPagetree(tree[key], subpath+key+'/');
+                result += '</ul></details></li>\n';
+            }
         });
+        return result;
+    }
+    function loadPagelist() {
+        console.log(pagelist);
+        var result = '<h2>Seiten</h2><ul>\n';
+        result += renderPagetree(pagelist, '');
         result += '</ul>\n';
         halfRight = document.getElementById('halfRight');
         halfRight.innerHTML = result;
