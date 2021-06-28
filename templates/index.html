@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    @media only screen and (min-width: 981px) {
+        div#content {
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: 2fr 1fr;
+        }
+        div#halfLeft {
+            grid-column: 1 / 2;
+            grid-row: 1/2;
+        }
+        div#halfRight {
+            style="grid-column: 2 / 3;
+            grid-row: 1/2;
+        }
+    }
+{% endblock %}
+
+{% block content %}
+<div style="height:0; width:0; margin-top:-5.8rem; margin-bottom:2rem;">
+    <p style="font-size:3.8rem; color:rgba(127,127,127,0.15)">PolarCloud</p>
+</div>
+<nav id="pagenav">
+</nav>
+<div id="content">
+    <div id="halfRight">
+        <p>Seitenliste wird geladen...</p>
+    </div>
+    <div id="halfLeft">
+        <h2>Startseite</h2>
+        <p>TODO: Ganzen Dateibaum!</p>
+    </div>
+</div>
+
+<script src="{{ relroot }}static/getFormJson.js"></script>
+<script src="{{ relroot }}static/polalert.js"></script>
+<script>
+    var pagelist = {{ pagelist|safe }};
+    
+    function loadPagelist() {
+        result = '<h2>Seiten</h2><ul>\n';
+        
+        Object.keys(pagelist["."]).forEach(function(key) {
+            var value = pagelist["."][key];
+            result += '<li><a href="pages/'+value.name+value.ext+'">'+value.name+'</a></li>\n';
+        });
+        result += '</ul>\n';
+        halfRight = document.getElementById('halfRight');
+        halfRight.innerHTML = result;
+    }
+    loadPagelist();
+</script>
+{% endblock %}

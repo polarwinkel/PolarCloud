@@ -1,0 +1,41 @@
+<!doctype html>
+<html id="html">
+    <head>
+        <title>PolarCloud</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" type="text/css" href="{{ relroot }}static/polar.css" />
+        <link rel="stylesheet" type="text/css" href="{{ relroot }}static/main.css" />
+        <link rel="icon" type="image/svg+xml" href="{{ relroot }}static/favicon.svg" sizes="any" />
+        <!--<link rel="icon" type="image/x-icon" href="{{ relroot }}static/favicon.ico" sizes="any" />-->
+        <script>
+            function printView() {
+                document.getElementById('html').style.fontSize = '16px';
+                document.getElementById('html').style.backgroundColor = '#aaa';
+                document.getElementById('body').style.width = '21.0cm';
+                document.getElementById('body').style.paddingRight = '1.5cm';
+                document.getElementById('body').style.paddingLeft = '1.5cm';
+                document.getElementById('nav').style.display = 'none';
+                var noPrint = document.getElementsByClassName('no-print');
+                for(var i=0, len=noPrint.length; i<len; i++) {
+                    noPrint[i].style.display = 'none';
+                }
+            }
+        </script>
+        <style>
+            {% block style %}{% endblock %}
+        </style>
+    </head>
+    <body id="body">
+        <div id="page">
+            <p id="nav" class="no-print" style="width:100%; background-color:080; text-align:right;">
+                <a href="{{ relroot }}">&#8962;</a> | 
+                <a href="{{ relroot }}new">&CirclePlus;</a> | 
+                <a href="{{ relroot }}data">&#128436;</a> | 
+                <a href="{{ relroot }}mdTeXCheatsheet">&#128712;</a> | 
+                <a href="{{ relroot }}settings">&#9881;</a>
+            </p>
+        {% block content %}Content{% endblock %}
+        </div>
+    </body>
+</html>
