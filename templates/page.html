@@ -17,7 +17,7 @@
     const edit = async () => {
         const response = await fetch(sourceUrl);
         const source = await response.text();
-        content = '<div style="clear:both;"><textarea path="source" id="source" class="formdata">\n';
+        content = '<div style="clear:both;"><textarea path="source" id="source" class="formdata" rows="20">\n';
         content = content+source;
         content = content+'</textarea></div>';
         content = content+'<div style="clear:both;"><input type="submit" value="Speichern" onclick="save()"></div>\n';

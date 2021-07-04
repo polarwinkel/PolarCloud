@@ -44,7 +44,8 @@ textarea {
     width: 100%;
     max-width:100%;
     min-width:250px;
-    height: 200px;
+    min-height: 200px;
+    max-height: 80%;
 }
 button {
     min-width:250px;
