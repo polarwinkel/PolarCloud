@@ -6,10 +6,19 @@
 </nav>
 <div id="content">
 <h1>Neuer Content</h1>
-<input type="hidden" id="type" value="mdtex">
-<div style="clear:both;"><p>Titel (Dateiname): </p><input type="text" id="name"></div>
-<p>Inhalt:</p>
-<div style="clear:both;"><textarea path="source" id="source" class="formdata" rows="20"></textarea></div>
+<div style="clear:both;" id="dtype">
+    <h3>Typ</h3>
+    <select name="type" id="type" onchange="changeType()">
+        <option value="mdtex" selected>mdtex</option>
+        <option value="svg">svg</option>
+        <option value="file">TODO: File upload</option>
+        <option value="folder">folder</option>
+    </select>
+</div>
+<div style="clear:both;" id="dname"><h3>Titel (Dateiname): </h3><input type="text" id="name"></div>
+<h3>Inhalt:</h3>
+<div style="clear:both;" id="dsource"><textarea path="source" id="source" class="formdata" rows="20"></textarea></div>
+<div style="clear:both;" id="dfile" style="display: none;"><input type="file" id="file" name="file" /></div>
 <div style="clear:both;"><input type="submit" value="Speichern" onclick="saveMdtex()"></div>
 </div>
 
@@ -18,12 +27,29 @@
     var relroot = '{{ relroot }}';
     var createUrl = relroot+'createContent/'+path;
     
+    function changeType(){
+        type = document.getElementById('type').value;
+        if (type=='mdtex'){
+            document.getElementById('dsource').style.display = 'block';
+            document.getElementById('dfile').style.display = 'none';
+        } else if (type=='svg'){
+            document.getElementById('dsource').style.display = 'block';
+            document.getElementById('dfile').style.display = 'none';
+        } else if (type=='file'){
+            document.getElementById('dsource').style.display = 'none';
+            document.getElementById('dfile').style.display = 'block';
+        } else if (type=='folder'){
+            document.getElementById('dsource').style.display = 'none';
+            document.getElementById('dfile').style.display = 'none';
+        }
+    }
+    
     async function saveMdtex() {
-        var type = 'mdtex';
+        var type = document.getElementById('type').value;
         var name = document.getElementById('name').value; // TODO: Check if valid filename (compare to python-implementation)
         var source = document.getElementById('source').value;
         var send = {};
-        send['type'] = type;
+        send['type'] = type
         send['name'] = name;
         send['source'] = source;
         const response = await fetch(createUrl, {

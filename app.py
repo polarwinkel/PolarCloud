@@ -23,7 +23,6 @@ setfile = 'settings.yaml'
 app = Flask(__name__)
 settings = settingsio.settingsIo(setfile)
 
-data = load.loadFolder(folder)
 host = settings.get('host')
 debug = settings.get('debug')
 # extensions to be used by python-markdown:
@@ -35,6 +34,7 @@ extensions = settings.get('extensions')
 def index():
     '''show index-page'''
     files = load.loadFolder(folder)
+    print(json.dumps(files, indent=4, sort_keys=True))
     filelist = json.dumps(files)
     return render_template('index.html', relroot='./', filelist=filelist)
 
@@ -87,7 +87,16 @@ def createContent(path):
     #postvars = request.data.decode('utf-8') 
     #print(postvars)
     safechars = string.ascii_lowercase + string.ascii_uppercase + string.digits + '.-_'
-    filename = ''.join([c for c in request.json['name'] if c in safechars])+'.mdtex'
+    fname = ''.join([c for c in request.json['name'] if c in safechars])
+    if request.json['type'] == 'mdtex':
+        filename = fname+'.mdtex'
+    elif request.json['type'] == 'svg':
+        filename = fname+'.svg'
+    elif request.json['type'] == 'folder':
+        os.mkdir(folder+'/'+path+'/'+fname)
+        return '/'
+    else:
+        return 'TODO: Error'
     filepath = folder+'/'+path+'/'+filename
     with open(filepath, 'w') as f:
         f.write(str(request.json['source']))

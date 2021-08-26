@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 '''
-Database-IO-file of TeXerBase - an Database Server for Exercises
+load files for PolarCloud
 '''
 
 import os, glob
@@ -10,16 +10,20 @@ def getFromDict(dic, keys):
         dic = dic[key]
     return dic
 
-def setInDict(dic, keys, name, filename, ext, scYaml):
+def setInDict(dic, keys, name, filename, ext, scYaml=''):
     if keys != ['']:
         for key in keys:
             dic = dic.setdefault(key, {})
     if not '.' in dic.keys():
         dic['.'] = {}
-    dic['.'][filename] = {'name': name, 'ext': ext, 'scYaml':scYaml}
+    if filename != '':
+        dic['.'][filename] = {'name': name, 'ext': ext, 'scYaml':scYaml}
+    elif name != '':
+        if not name in dic:
+            dic[name] = {}
     
 def loadFolder(folder):
-    '''loads all .md, .mdt and .mdtex-files from a folder, returning as dict'''
+    '''recursive search for files in a folder, returning as dict, with sc.yaml as additional "sidecar-info"'''
     pages={}
     files = glob.glob(folder+'/**', recursive=True)
     for f in files:
@@ -29,10 +33,17 @@ def loadFolder(folder):
             ext=os.path.splitext(filename)[1]
             path = os.path.dirname(f)[len(folder)+1:]
             pl = path.split('/')
+            scYaml=''
             scFile = os.path.splitext(f)[0]+'.sc.yaml'
-            scYaml = ''
-            if os.path.isfile(scFile):
+            if os.path.isfile(scFile):# TODO: Keywords and description separate!
                 with open(scFile, 'r') as scF:
                     scYaml = scF.read()
             setInDict(pages, pl, name, filename, ext, scYaml)
+        elif not os.path.isfile(f):
+            filename=os.path.basename(f)
+            name=os.path.splitext(filename)[0]
+            ext=os.path.splitext(filename)[1]
+            path = os.path.dirname(f)[len(folder)+1:]
+            pl = path.split('/')
+            setInDict(pages, pl, name, '', '')
     return pages

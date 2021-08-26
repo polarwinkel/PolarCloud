@@ -46,7 +46,7 @@
                 Object.keys(tree["."]).forEach(function(subkey) {
                     var value = tree["."][subkey];
                     result += '<li>'
-                    result += '<a href="'+subpath+value.name+value.ext+'">'+value.name+'</a>'
+                    result += '<a href="'+subpath+value.name+value.ext+'">'+value.name+value.ext+'</a>'
                     result += '</li>\n';
                 });
             } else {
