@@ -26,45 +26,44 @@
 </nav>
 <div id="content">
     <div id="halfRight">
-        <p>Seitenliste wird geladen...</p>
+        <p>loading file tree...</p>
     </div>
     <div id="halfLeft">
-        <h2>Startseite</h2>
-        <p>TODO: Ganzen Dateibaum!</p>
+        <h2>Start</h2>
+        <p>TODO: Implement a search form here</p>
     </div>
 </div>
 
 <script src="{{ relroot }}static/getFormJson.js"></script>
 <script src="{{ relroot }}static/polalert.js"></script>
 <script>
-    var pagelist = {{ pagelist|safe }};
-    function renderPagetree(tree, subpath) {
+    var filelist = {{ filelist|safe }};
+    function renderFiletree(tree, subpath) {
         var result = '';
         Object.keys(tree).forEach(function(key) {
             if (key == '.') {
                 Object.keys(tree["."]).forEach(function(subkey) {
                     var value = tree["."][subkey];
                     result += '<li>'
-                    result += '<a href="pages/'+subpath+value.name+value.ext+'">'+value.name+'</a>'
+                    result += '<a href="'+subpath+value.name+value.ext+'">'+value.name+'</a>'
                     result += '</li>\n';
                 });
             } else {
                 result += '<li>';
-                result += '<details><summary>'+key+'</summary><ul>';
-                result += renderPagetree(tree[key], subpath+key+'/');
+                result += '<details><summary>'+key+' <a href="/_new/'+subpath+key+'">&CirclePlus;</a></summary><ul>';
+                result += renderFiletree(tree[key], subpath+key+'/');
                 result += '</ul></details></li>\n';
             }
         });
         return result;
     }
-    function loadPagelist() {
-        console.log(pagelist);
+    function loadFilelist() {
         var result = '<h2>Seiten</h2><ul>\n';
-        result += renderPagetree(pagelist, '');
+        result += renderFiletree(filelist, '');
         result += '</ul>\n';
         halfRight = document.getElementById('halfRight');
         halfRight.innerHTML = result;
     }
-    loadPagelist();
+    loadFilelist();
 </script>
 {% endblock %}
