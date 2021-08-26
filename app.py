@@ -46,7 +46,7 @@ def index():
 def page(path):
     '''show wiki-page'''
     depth = path.count('/')
-    relroot = '../'
+    relroot = './'
     for i in range(depth):
         relroot = relroot+'../'
     # TODO: different handling depending on file ending, download for unknown
