@@ -38,6 +38,7 @@
 <script src="{{ relroot }}static/polalert.js"></script>
 <script>
     var filelist = {{ filelist|safe }};
+    var relroot = '{{ relroot }}';
     function renderFiletree(tree, subpath) {
         var result = '';
         Object.keys(tree).forEach(function(key) {
@@ -50,7 +51,7 @@
                 });
             } else {
                 result += '<li>';
-                result += '<details><summary>'+key+' <a href="/_new/'+subpath+key+'">&CirclePlus;</a></summary><ul>';
+                result += '<details><summary>'+key+' <a href="'+relroot+'_new/'+subpath+key+'">&CirclePlus;</a></summary><ul>';
                 result += renderFiletree(tree[key], subpath+key+'/');
                 result += '</ul></details></li>\n';
             }
