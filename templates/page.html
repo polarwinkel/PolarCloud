@@ -8,11 +8,35 @@
 <div id="content">
 {{ content|safe }}
 </div>
+<hr />
+<div id="meta">
+    <p>Loading meta-information...</p>
+</div>
 
 <script>
     var path = '{{ path }}';
     var sourceUrl = '{{ relroot }}_getSource/{{ path }}';
     var updateUrl = '{{ relroot }}updatePage/{{ path }}';
+    var meta = {{ meta|safe }};
+    
+    function showMeta() {
+        var m = document.getElementById('meta');
+        var out = '<h2>Meta-information</h2>';
+        out += '<h3>Description</h3>'
+        if (meta.hasOwnProperty('description')){
+            out += meta.description;
+        }else{
+            out += '<p>-</p>'
+        }
+        out += '<h3>Keywords</h3>';
+        if (meta.hasOwnProperty('keywords')){
+            out += meta.keywords;
+        }else{
+            out += '<p>-</p>';
+        }
+        m.innerHTML=out;
+    }
+    showMeta();
     
     const edit = async () => {
         const response = await fetch(sourceUrl);
@@ -36,7 +60,7 @@
         });
         location.reload();
         //return response.json(); // parses JSON response into native JavaScript objects
-    }    
+    }
 </script>
 {% endblock %}
 

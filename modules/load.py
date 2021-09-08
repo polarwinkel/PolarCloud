@@ -3,7 +3,7 @@
 load files for PolarCloud
 '''
 
-import os, glob
+import os, glob, yaml
 
 def getFromDict(dic, keys):    
     for key in keys:
@@ -21,24 +21,25 @@ def setInDict(dic, keys, name, filename, ext, scYaml=''):
     elif name != '':
         if not name in dic:
             dic[name] = {}
-    
+
 def loadFolder(folder):
     '''recursive search for files in a folder, returning as dict, with sc.yaml as additional "sidecar-info"'''
     pages={}
     files = glob.glob(folder+'/**', recursive=True)
     for f in files:
-        if not f.endswith('.sc.yaml') and os.path.isfile(f):
+        if not f.endswith('.pcsc') and os.path.isfile(f):
             filename=os.path.basename(f)
             name=os.path.splitext(filename)[0]
             ext=os.path.splitext(filename)[1]
             path = os.path.dirname(f)[len(folder)+1:]
             pl = path.split('/')
-            scYaml=''
-            scFile = os.path.splitext(f)[0]+'.sc.yaml'
+            #scFile = os.path.splitext(f)[0]+'.pcsc'
+            scFile = os.path.relpath(f)+'.pcsc'
+            meta = {}
             if os.path.isfile(scFile):# TODO: Keywords and description separate!
                 with open(scFile, 'r') as scF:
-                    scYaml = scF.read()
-            setInDict(pages, pl, name, filename, ext, scYaml)
+                    meta = yaml.full_load(scF)
+            setInDict(pages, pl, name, filename, ext, meta)
         elif not os.path.isfile(f):
             filename=os.path.basename(f)
             name=os.path.splitext(filename)[0]

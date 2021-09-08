@@ -8,9 +8,6 @@ import os, sys
 from flask import Flask, render_template, request, send_from_directory, make_response, jsonify
 import json, yaml, string
 from jinja2 import Template
-from base64 import b64encode, b64decode, decodebytes
-from io import BytesIO
-from PIL import Image
 import mdtex2html
 from modules import settingsio, load
 
@@ -34,7 +31,7 @@ extensions = settings.get('extensions')
 def index():
     '''show index-page'''
     files = load.loadFolder(folder)
-    print(json.dumps(files, indent=4, sort_keys=True))
+    #print(json.dumps(files, indent=4, sort_keys=True)) # show files-dict for debugging and reference
     filelist = json.dumps(files)
     return render_template('index.html', relroot='./', filelist=filelist)
 
@@ -58,7 +55,11 @@ def page(path):
     except IsADirectoryError:
         mdtex = '# 501 Error\n\nDirectory listing is not implemented!'
     content = mdtex2html.convert(mdtex)
-    return render_template('page.html', relroot=relroot, path=path, content=content)
+    meta = {}
+    if os.path.isfile(folder+'/'+path+'.pcsc'):
+        with open(folder+'/'+path+'.pcsc', 'r') as scF:
+            meta = yaml.full_load(scF)
+    return render_template('page.html', relroot=relroot, path=path, content=content, meta=meta)
 
 @app.route('/_mdTeXCheatsheet', methods=['GET'])
 def sendMdTeXCheatSheet():
