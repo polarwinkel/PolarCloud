@@ -35,6 +35,10 @@ def index():
     filelist = json.dumps(files)
     return render_template('index.html', relroot='./', filelist=filelist)
 
+@app.route('/_static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
+
 #@app.route('/data', methods=['GET'])
 #def sendData():
 #    return render_template('data.html', relroot='./')
@@ -83,7 +87,7 @@ def newPage(path):
         relroot = relroot+'../'    
     return render_template('new.html', relroot=relroot, path=path)
 
-@app.route('/createContent/<path:path>', methods=['POST'])
+@app.route('/_createContent/<path:path>', methods=['POST'])
 def createContent(path):
     #postvars = request.data.decode('utf-8') 
     #print(postvars)
@@ -103,7 +107,7 @@ def createContent(path):
         f.write(str(request.json['source']))
     return path+'/'+filename
 
-@app.route('/mdtex2html', methods=['POST'])
+@app.route('/_mdtex2html', methods=['POST'])
 def post_mdtex2html():
     postvars = request.data
     try:
@@ -111,7 +115,7 @@ def post_mdtex2html():
     except Exception as e:
         return 'ERROR: Could not convert the mdTeX to HTML:' + str(e)
 
-@app.route('/updatePage/<path:path>', methods=['PUT'])
+@app.route('/_updatePage/<path:path>', methods=['PUT'])
 def updatePage(path):
     postvars = request.data.decode('utf-8') 
     filepath = folder+'/'+path
@@ -119,7 +123,7 @@ def updatePage(path):
         f.write(str(postvars))
     return '0'
 
-@app.route('/updateSettings', methods=['PUT'])
+@app.route('/_updateSettings', methods=['PUT'])
 def updateSettings():
     setnew = request.json
     if 'False' in setnew['extensions']:
@@ -135,7 +139,7 @@ def updateSettings():
     content = 'ok'
     return content
 
-@app.route('/delete', methods=['DELETE'])
+@app.route('/_delete', methods=['DELETE'])
 # TODO
 def deletePage():
     result = 'TODO'

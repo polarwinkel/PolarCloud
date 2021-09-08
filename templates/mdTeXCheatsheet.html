@@ -98,7 +98,7 @@
 <script>
     function mdtex2html(mdtex) {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "mdtex2html", false);
+        xhr.open("POST", "_mdtex2html", false);
         xhr.setRequestHeader("Content-Type", "application/mdtex");
         xhr.send(mdtex);
         return xhr.responseText;

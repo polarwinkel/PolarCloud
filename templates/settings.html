@@ -65,7 +65,7 @@ load();
 function send() {
     var xhr = new XMLHttpRequest();
     var formJson = getFormJson();
-    xhr.open('PUT', 'updateSettings', false);
+    xhr.open('PUT', '_updateSettings', false);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify(formJson));
     console.log(xhr.responseText);
