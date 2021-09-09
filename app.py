@@ -123,6 +123,15 @@ def updatePage(path):
         f.write(str(postvars))
     return '0'
 
+@app.route('/_updateMeta/<path:path>', methods=['PUT'])
+def updateMeta(path):
+    postvars = request.data.decode('utf-8')
+    filepath = folder+'/'+path+'.pcsc'
+    print(yaml.dump(postvars, allow_unicode=True))
+    with open(filepath, 'w') as f:
+        yaml.dump(json.loads(postvars), f, allow_unicode=True)
+    return '0'
+
 @app.route('/_updateSettings', methods=['PUT'])
 def updateSettings():
     setnew = request.json

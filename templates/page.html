@@ -8,7 +8,6 @@
 <div id="content">
 {{ content|safe }}
 </div>
-<hr />
 <div id="meta">
     <p>Loading meta-information...</p>
 </div>
@@ -17,26 +16,55 @@
     var path = '{{ path }}';
     var sourceUrl = '{{ relroot }}_getSource/{{ path }}';
     var updateUrl = '{{ relroot }}_updatePage/{{ path }}';
+    var updateMetaUrl = '{{ relroot }}_updateMeta/{{ path }}';
     var meta = {{ meta|safe }};
     
     function showMeta() {
         var m = document.getElementById('meta');
-        var out = '<h2>Meta-information</h2>';
+        var found = false;
+        var out = '<hr />\n<a onclick="editMeta()">Edit Meta</a>';
+        out += '<h2>Meta-information</h2>';
         out += '<h3>Description</h3>'
         if (meta.hasOwnProperty('description')){
+            found = true;
             out += meta.description;
         }else{
             out += '<p>-</p>'
         }
         out += '<h3>Keywords</h3>';
         if (meta.hasOwnProperty('keywords')){
+            found = true;
             out += meta.keywords;
         }else{
             out += '<p>-</p>';
         }
-        m.innerHTML=out;
+        if (found) {
+            m.innerHTML=out;
+        }else{
+            m.innerHTML='<hr />\n<a onclick="editMeta()">Add Meta</a>';
+        }
     }
     showMeta();
+    function editMeta() {
+        var m = document.getElementById('meta');
+        var out = '<hr />'
+        out += '<textarea name="description" id="description" class="formdata" rows="5">';
+        if (meta.hasOwnProperty('description')){
+            out += meta.description;
+        }else{
+            out += ''
+        }
+        out += '</textarea>';
+        out += '<textarea name="keywords" id="keywords" class="formdata" rows="2">';
+        if (meta.hasOwnProperty('keywords')){
+            out += meta.keywords;
+        }else{
+            out += ''
+        }
+        out += '</textarea>';
+        out += '<div style="clear:both;"><input type="submit" value="Speichern" onclick="saveMeta()"></div>\n';
+        m.innerHTML = out;
+    }
     
     const edit = async () => {
         const response = await fetch(sourceUrl);
@@ -60,6 +88,22 @@
         });
         location.reload();
         //return response.json(); // parses JSON response into native JavaScript objects
+    }
+    async function saveMeta() {
+        var desc = document.getElementById('description').value;
+        var keyw = document.getElementById('keywords').value;
+        var m = {'description':desc, 'keywords':keyw};
+        const response = await fetch(updateMetaUrl, {
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: JSON.stringify(m)
+        });
+        location.reload();
     }
 </script>
 {% endblock %}
