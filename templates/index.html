@@ -32,7 +32,7 @@
         <h2>Start</h2>
         <input type="text" id="searchQuick"></input><button onclick="searchQuick()">Suchen</button>
         <div id="searchResults"></div>
-        <p>TODO: Include keywords/meta in the search</p>
+        <p>TODO: Make search case-insensitive; Include keywords/meta in the search</p>
     </div>
 </div>
 
@@ -73,7 +73,7 @@
         for (item in dict) {
             if (item == '.') {
                 for (item in dict['.']) {
-                    if (item.includes(word)) {
+                    if (item.toLowerCase().includes(word)) {
                         result.push([path, item]);
                     }
                 }
@@ -84,10 +84,10 @@
         return result;
     }
     function searchQuick() {
-        console.log(filelist);
-        word = document.getElementById('searchQuick').value;
+        //console.log(filelist);
+        word = document.getElementById('searchQuick').value.toLowerCase();
         list = findWord(word, filelist, '');
-        console.log(list);
+        //console.log(list);
         out = '<ul>';
         for (var i = 0; i < list.length; i++) {
             out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a></li>';
