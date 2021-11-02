@@ -30,7 +30,9 @@
     </div>
     <div id="halfLeft">
         <h2>Start</h2>
-        <p>TODO: Implement a search form here</p>
+        <input type="text" id="searchQuick"></input><button onclick="searchQuick()">Suchen</button>
+        <div id="searchResults"></div>
+        <p>TODO: Include keywords/meta in the search</p>
     </div>
 </div>
 
@@ -66,5 +68,32 @@
         halfRight.innerHTML = result;
     }
     loadFilelist();
+    function findWord(word, dict, path) {
+        var result = [];
+        for (item in dict) {
+            if (item == '.') {
+                for (item in dict['.']) {
+                    if (item.includes(word)) {
+                        result.push([path, item]);
+                    }
+                }
+            } else {
+                result = [].concat(result, findWord(word, dict[item], item+'/'));
+            }
+        }
+        return result;
+    }
+    function searchQuick() {
+        console.log(filelist);
+        word = document.getElementById('searchQuick').value;
+        list = findWord(word, filelist, '');
+        console.log(list);
+        out = '<ul>';
+        for (var i = 0; i < list.length; i++) {
+            out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a></li>';
+        }
+        out += '</ul>';
+        document.getElementById('searchResults').innerHTML = out;
+    }
 </script>
 {% endblock %}
