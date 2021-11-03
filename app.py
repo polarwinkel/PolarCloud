@@ -148,11 +148,14 @@ def updateSettings():
     content = 'ok'
     return content
 
-@app.route('/_delete', methods=['DELETE'])
+@app.route('/_delete/<path:path>', methods=['DELETE'])
 # TODO
-def deletePage():
-    result = 'TODO'
-    return result
+def deletePage(path):
+    if os.path.exists(folder+'/'+path):
+        os.remove(folder+'/'+path)
+        return '0'
+    else:
+        return 'ERROR: file not found!'
 
 @app.errorhandler(404)
 def error_not_found(error):

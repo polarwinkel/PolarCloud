@@ -3,7 +3,8 @@
 {% block content %}
 <code>{{ path }}</code>
 <nav id="pagenav">
-    <a onclick="edit()">Edit</a>
+    <a onclick="edit()">Edit</a> | 
+    <a onclick="pa.boolean('! ACHTUNG !<br />Wirklich löschen?', 'delete');">Delete</a>
 </nav>
 <div id="content">
 {{ content|safe }}
@@ -12,11 +13,14 @@
     <p>Loading meta-information...</p>
 </div>
 
+<script src="{{ relroot }}_static/polalert.js"></script>
 <script>
     var path = '{{ path }}';
+    var relroot = '{{ relroot }}';
     var sourceUrl = '{{ relroot }}_getSource/{{ path }}';
     var updateUrl = '{{ relroot }}_updatePage/{{ path }}';
     var updateMetaUrl = '{{ relroot }}_updateMeta/{{ path }}';
+    var deleteUrl = '{{ relroot }}_delete/{{ path }}';
     var meta = {{ meta|safe }};
     
     function showMeta() {
@@ -88,6 +92,20 @@
         });
         location.reload();
         //return response.json(); // parses JSON response into native JavaScript objects
+    }
+    function paOk(str) {
+        if (str == 'delete') {
+            deletePage();
+        }
+    }
+    function paNo(str) {
+        pa.message('Ok, nichts passiert!');
+    }
+    async function deletePage() {
+        const response = await fetch(deleteUrl, {
+            method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+        });
+        window.location.href = relroot;
     }
     async function saveMeta() {
         var desc = document.getElementById('description').value;
