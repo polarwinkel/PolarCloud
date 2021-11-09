@@ -30,9 +30,10 @@
     </div>
     <div id="halfLeft">
         <h2>Start</h2>
-        <input type="text" id="searchQuick"></input><button onclick="searchQuick()">Suchen</button>
+        <label for="searchQuick()">Suche:</label>
+        <input type="text" id="searchQuick" autocomplete="off" autofocus oninput="searchQuick()"></input>
+        <!--TODO: implement server-side full-text search<button onclick="searchFull()">Volltext Suche</button>-->
         <div id="searchResults"></div>
-        <p>TODO: Include keywords/meta in the search</p>
     </div>
 </div>
 
@@ -85,14 +86,20 @@
     }
     function searchQuick() {
         //console.log(filelist);
-        word = document.getElementById('searchQuick').value.toLowerCase();
-        list = findWord(word, filelist, '');
-        //console.log(list);
-        out = '<ul>';
-        for (var i = 0; i < list.length; i++) {
-            out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a></li>';
+        var word = document.getElementById('searchQuick').value.toLowerCase();
+        if (word.length >= 3) {
+            var list = findWord(word, filelist, '');
+            //console.log(list);
+            var out = '<h3>Ergebnisse:</h3>'
+            out += '<ul>';
+            for (var i = 0; i < list.length; i++) {
+                out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a></li>';
+            }
+            out += '</ul>';
+            out += '<p>TODO: Include keywords/meta in the search</p>';
+        } else {
+            var out = '(mindestens 3 Buchstaben zur Suche nötig)';
         }
-        out += '</ul>';
         document.getElementById('searchResults').innerHTML = out;
     }
 </script>
