@@ -25,15 +25,15 @@
 <nav id="pagenav">
 </nav>
 <div id="content">
-    <div id="halfRight">
-        <p>loading file tree...</p>
-    </div>
     <div id="halfLeft">
         <h2>Start</h2>
         <label for="searchQuick()">Suche:</label>
         <input type="text" id="searchQuick" autocomplete="off" autofocus oninput="searchQuick()"></input>
         <!--TODO: implement server-side full-text search<button onclick="searchFull()">Volltext Suche</button>-->
         <div id="searchResults"></div>
+    </div>
+    <div id="halfRight">
+        <p>loading file tree...</p>
     </div>
 </div>
 
@@ -97,8 +97,10 @@
             }
             out += '</ul>';
             out += '<p>TODO: Include keywords/meta in the search</p>';
-        } else {
+        } else if (word.length > 0) {
             var out = '(mindestens 3 Buchstaben zur Suche nötig)';
+        } else {
+            var out = '';
         }
         document.getElementById('searchResults').innerHTML = out;
     }
