@@ -49,12 +49,14 @@
                 Object.keys(tree["."]).forEach(function(subkey) {
                     var value = tree["."][subkey];
                     result += '<li>'
-                    result += '<a href="'+subpath+value.name+value.ext+'">'+value.name+value.ext+'</a>'
+                    result += '<a draggable="true" ondragstart="drag(event)" id="'+subpath+value.name+value.ext+'" href="'+subpath+value.name+value.ext+'">'+value.name+value.ext+'</a>'
                     result += '</li>\n';
                 });
             } else {
                 result += '<li>';
-                result += '<details><summary>'+key+' <a href="'+relroot+'_new/'+subpath+key+'">&CirclePlus;</a></summary><ul>';
+                result += '<details><summary ondrop="drop(event)" ondragover="allowDrop(event)" id="'+subpath+key+'">';
+                result += key+' <a href="'+relroot+'_new/'+subpath+key+'">&CirclePlus;</a>';
+                result += '</summary><ul>';
                 result += renderFiletree(tree[key], subpath+key+'/');
                 result += '</ul></details></li>\n';
             }
@@ -103,6 +105,18 @@
             var out = '';
         }
         document.getElementById('searchResults').innerHTML = out;
+    }
+    function drag(event) {
+        event.dataTransfer.setData("filePath", event.target.id);
+    }
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+    function drop(event) {
+        event.preventDefault();
+        var source = event.dataTransfer.getData('filePath');
+        var dest = event.target.id;
+        pa.message('TODO: move <code>'+source+'</code> to <code>'+dest+'</code> !');
     }
 </script>
 {% endblock %}
