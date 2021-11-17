@@ -112,11 +112,29 @@
     function allowDrop(event) {
         event.preventDefault();
     }
+    async function move(m) {
+        var moveUrl = relroot+'_move/'+JSON.parse(m).filePath;;
+        const response = await fetch(moveUrl, {
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: m
+        });
+        location.reload();
+    }
+    function paOk(m) {
+        move(m);
+    }
     function drop(event) {
         event.preventDefault();
         var source = event.dataTransfer.getData('filePath');
         var dest = event.target.id;
-        pa.message('TODO: move <code>'+source+'</code> to <code>'+dest+'</code> !');
+        var m = {'filePath':source, 'destPath':dest};
+        pa.boolean('Move <code>'+source+'</code> to <code>'+dest+'</code> ?', JSON.stringify(m));
     }
 </script>
 {% endblock %}

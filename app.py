@@ -127,9 +127,19 @@ def updatePage(path):
 def updateMeta(path):
     postvars = request.data.decode('utf-8')
     filepath = folder+'/'+path+'.pcsc'
-    print(yaml.dump(postvars, allow_unicode=True))
+    #print(yaml.dump(postvars, allow_unicode=True))
     with open(filepath, 'w') as f:
         yaml.dump(json.loads(postvars), f, allow_unicode=True)
+    return '0'
+
+@app.route('/_move/<path:path>', methods=['PUT'])
+def move(path):
+    data = json.loads(request.data.decode('utf-8'))
+    filename = os.path.basename(path)
+    os.rename(folder+'/'+path, folder+'/'+data['destPath']+'/'+filename)
+    fileMetaPath = folder+'/'+path+'.pcsc'
+    if os.path.exists(fileMetaPath):
+        os.rename(fileMetaPath, folder+'/'+data['destPath']+'/'+filename+'.pcsc')
     return '0'
 
 @app.route('/_updateSettings', methods=['PUT'])
@@ -153,6 +163,8 @@ def updateSettings():
 def deletePage(path):
     if os.path.exists(folder+'/'+path):
         os.remove(folder+'/'+path)
+        if os.path.exists(folder+'/'+path+'.pcsc'):
+            os.remove(folder+'/'+path+'.pcsc')
         return '0'
     else:
         return 'ERROR: file not found!'
