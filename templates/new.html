@@ -15,11 +15,15 @@
         <option value="folder">folder</option>
     </select>
 </div>
-<div style="clear:both;" id="dname"><h3>Titel (filename): </h3><input type="text" id="name"></div>
-<h3>Inhalt:</h3>
+<div style="clear:both;" id="dname"><h3>Title (filename): </h3><input type="text" id="name"></div>
+<h3>Content:</h3>
 <div style="clear:both;" id="dsource"><textarea path="source" id="source" class="formdata" rows="20"></textarea></div>
-<div style="clear:both;" id="dfile" style="display: none;"><input type="file" id="file" name="file" /></div>
-<div style="clear:both;"><input type="submit" value="Save" onclick="saveMdtex()"></div>
+<div style="clear:both;"><input type="file" id="file" name="file" style="display: none;" /></div>
+<label for="description">Description:</label>
+<textarea name="description" id="description" class="formdata" rows="5"></textarea>
+<label for="keywords">Keywords:</label>
+<textarea name="keywords" id="keywords" class="formdata" rows="2"></textarea>
+<div style="clear:both;"><input type="submit" value="Save" onclick="save()"></div>
 </div>
 
 <script>
@@ -31,41 +35,56 @@
         type = document.getElementById('type').value;
         if (type=='mdtex'){
             document.getElementById('dsource').style.display = 'block';
-            document.getElementById('dfile').style.display = 'none';
+            document.getElementById('file').style.display = 'none';
+            document.getElementById('description').style.display = 'block';
+            document.getElementById('keywords').style.display = 'block';
         } else if (type=='svg'){
             document.getElementById('dsource').style.display = 'block';
-            document.getElementById('dfile').style.display = 'none';
+            document.getElementById('file').style.display = 'none';
+            document.getElementById('description').style.display = 'block';
+            document.getElementById('keywords').style.display = 'block';
         } else if (type=='file'){
             document.getElementById('dsource').style.display = 'none';
-            document.getElementById('dfile').style.display = 'block';
+            document.getElementById('file').style.display = 'block';
+            document.getElementById('description').style.display = 'block';
+            document.getElementById('keywords').style.display = 'block';
         } else if (type=='folder'){
             document.getElementById('dsource').style.display = 'none';
-            document.getElementById('dfile').style.display = 'none';
+            document.getElementById('file').style.display = 'none';
+            document.getElementById('description').style.display = 'none';
+            document.getElementById('keywords').style.display = 'none';
         }
     }
     
-    async function saveMdtex() {
+    async function save() {
         var type = document.getElementById('type').value;
         var name = document.getElementById('name').value; // TODO: Check if valid filename (compare to python-implementation)
-        var source = document.getElementById('source').value;
+        var description = document.getElementById('description').value;
+        var keywords = document.getElementById('keywords').value;
         var send = {};
-        send['type'] = type
+        send['type'] = type;
         send['name'] = name;
-        send['source'] = source;
-        const response = await fetch(createUrl, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(send)
-        });
-        //location.reload();
-        response.text().then(function (text) {
-            window.location.href = (relroot+text);
-        });
+        send['description'] = description;
+        send['keywords'] = keywords;
+        if (type != 'file') {
+            var source = document.getElementById('source').value;
+            send['source'] = source;
+            const response = await fetch(createUrl, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(send)
+            });
+            response.text().then(function (text) {
+                window.location.href = (relroot+text);
+            });
+        } else {
+            
+        }
         //return response.json(); // parses JSON response into native JavaScript objects
     }    
 </script>

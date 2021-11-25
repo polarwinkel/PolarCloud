@@ -52,6 +52,7 @@
     function editMeta() {
         var m = document.getElementById('meta');
         var out = '<hr />'
+        out += '<label for="description">Description:</label>'
         out += '<textarea name="description" id="description" class="formdata" rows="5">';
         if (meta.hasOwnProperty('description')){
             out += meta.description;
@@ -59,6 +60,7 @@
             out += ''
         }
         out += '</textarea>';
+        out += '<label for="keywords">Keywords:</label>'
         out += '<textarea name="keywords" id="keywords" class="formdata" rows="2">';
         if (meta.hasOwnProperty('keywords')){
             out += meta.keywords;

@@ -138,6 +138,20 @@
         }else{
             out += '<p>-</p>';
         }
+        out += '<p>created: '
+        if (meta.hasOwnProperty('created')){
+            found = true;
+            out += meta.created+'</p>';
+        }else{
+            out += 'unknown</p>'
+        }
+        out += '<p>edited: '
+        if (meta.hasOwnProperty('edited')){
+            found = true;
+            out += meta.edited+'</p>';
+        }else{
+            out += 'unknown</p>'
+        }
         if (found) {
             m.innerHTML=out;
         }else{

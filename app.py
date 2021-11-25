@@ -10,6 +10,7 @@ import json, yaml, string
 from jinja2 import Template
 import mdtex2html
 from modules import settingsio, load
+from datetime import datetime
 
 folder='data' # TODO: include in settings!
 
@@ -60,6 +61,8 @@ def page(path):
     if os.path.isfile(folder+'/'+path+'.pcsc'):
         with open(folder+'/'+path+'.pcsc', 'r') as scF:
             meta = yaml.full_load(scF)
+            if meta == None:
+                meta = {}
     # TODO: different handling depending on file ending, download for unknown
     fileExt = os.path.splitext(folder+'/'+path)[1]
     if fileExt=='.mdtex' or fileExt=='.md':
@@ -127,18 +130,29 @@ def createContent(path):
     #print(postvars)
     safechars = string.ascii_lowercase + string.ascii_uppercase + string.digits + '.-_'
     fname = ''.join([c for c in request.json['name'] if c in safechars])
+    meta = False
     if request.json['type'] == 'mdtex':
         filename = fname+'.mdtex'
+        meta = True
     elif request.json['type'] == 'svg':
         filename = fname+'.svg'
+        meta = True
     elif request.json['type'] == 'folder':
         os.mkdir(folder+'/'+path+'/'+fname)
         return '/'
     else:
-        return 'TODO: Error'
+        return 'ERROR 501: Type not implemented'
     filepath = folder+'/'+path+'/'+filename
     with open(filepath, 'w') as f:
         f.write(str(request.json['source']))
+    if meta:
+        with open(filepath+'.pcsc', 'w') as f:
+            m={}
+            m['description'] = str(request.json['description'])
+            m['keywords'] = str(request.json['keywords'])
+            m['created'] = str(datetime.now())
+            m['edited'] = str(datetime.now())
+            yaml.dump(m, f, allow_unicode=True)
     return path+'/'+filename
 
 @app.route('/_mdtex2html', methods=['POST'])
@@ -155,6 +169,17 @@ def updatePage(path):
     filepath = folder+'/'+path
     with open(filepath, 'w') as f:
         f.write(str(postvars))
+    if os.path.isfile(folder+'/'+path+'.pcsc'):
+        with open(filepath+'.pcsc', 'r') as mf:
+            try:
+                m = yaml.safe_load(mf)
+            except:
+                m = {}
+    else:
+        m = {}
+    with open(filepath+'.pcsc', 'w') as mf:
+        m['edited'] = str(datetime.now())
+        yaml.dump(m, mf, allow_unicode=True)
     return '0'
 
 @app.route('/_updateMeta/<path:path>', methods=['PUT'])
@@ -162,8 +187,20 @@ def updateMeta(path):
     postvars = request.data.decode('utf-8')
     filepath = folder+'/'+path+'.pcsc'
     #print(yaml.dump(postvars, allow_unicode=True))
+    if os.path.isfile(folder+'/'+path+'.pcsc'):
+        with open(filepath, 'r') as f:
+            try:
+                m = yaml.safe_load(f)
+            except:
+                m = {}
+    else:
+        m = {}
     with open(filepath, 'w') as f:
-        yaml.dump(json.loads(postvars), f, allow_unicode=True)
+        m['edited'] = str(datetime.now())
+        mNeu = json.loads(postvars)
+        m['description'] = mNeu['description']
+        m['keywords'] = mNeu['keywords']
+        yaml.dump(m, f, allow_unicode=True)
     return '0'
 
 @app.route('/_move/<path:path>', methods=['PUT'])
@@ -193,7 +230,6 @@ def updateSettings():
     return content
 
 @app.route('/_delete/<path:path>', methods=['DELETE'])
-# TODO
 def deletePage(path):
     if os.path.exists(folder+'/'+path):
         os.remove(folder+'/'+path)
