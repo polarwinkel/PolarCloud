@@ -29,14 +29,17 @@
         <h2>Start</h2>
         <label for="searchQuick()">Suche:</label>
         <input type="text" id="searchQuick" autocomplete="off" autofocus oninput="searchQuick()"></input>
-        <!--TODO: implement server-side full-text search<button onclick="searchFull()">Volltext Suche</button>-->
+        <!--TODO: implement server-side full-text search<button onclick="searchFull()">Full-Text Search</button>-->
         <div id="searchResults"></div>
+        <hr />
+        <div id="content">
+{{ content|safe }}
+        </div>
     </div>
     <div id="halfRight">
         <p>loading file tree...</p>
     </div>
 </div>
-
 <script src="{{ relroot }}_static/getFormJson.js"></script>
 <script src="{{ relroot }}_static/polalert.js"></script>
 <script>
@@ -64,7 +67,8 @@
         return result;
     }
     function loadFilelist() {
-        var result = '<h2>Seiten</h2><ul>\n';
+        var result = '<h2>File Tree</h2><ul>\n';
+        result += '<p ondrop="drop(event)" ondragover="allowDrop(event)" id="./">./<a href="'+relroot+'_new/.">&CirclePlus;</a></p>';
         result += renderFiletree(filelist, '');
         result += '</ul>\n';
         halfRight = document.getElementById('halfRight');
@@ -92,7 +96,7 @@
         if (word.length >= 3) {
             var list = findWord(word, filelist, '');
             //console.log(list);
-            var out = '<h3>Ergebnisse:</h3>'
+            var out = '<h3>Results:</h3>'
             out += '<ul>';
             for (var i = 0; i < list.length; i++) {
                 out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a></li>';
@@ -100,7 +104,7 @@
             out += '</ul>';
             out += '<p>TODO: Include keywords/meta in the search</p>';
         } else if (word.length > 0) {
-            var out = '(mindestens 3 Buchstaben zur Suche nötig)';
+            var out = '(min of 3 chars)';
         } else {
             var out = '';
         }

@@ -123,6 +123,10 @@
         });
         location.reload();
     }
+    function svgPreview() {
+        svg = document.getElementById("svgCode").value;
+        document.getElementById("svgView").innerHTML = svg;
+    }
 </script>
 {% endblock %}
 

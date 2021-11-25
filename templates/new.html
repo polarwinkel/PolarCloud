@@ -5,9 +5,9 @@
 <nav id="pagenav">
 </nav>
 <div id="content">
-<h1>Neuer Content</h1>
+<h1>New Content</h1>
 <div style="clear:both;" id="dtype">
-    <h3>Typ</h3>
+    <h3>Type</h3>
     <select name="type" id="type" onchange="changeType()">
         <option value="mdtex" selected>mdtex</option>
         <option value="svg">svg</option>
@@ -15,11 +15,11 @@
         <option value="folder">folder</option>
     </select>
 </div>
-<div style="clear:both;" id="dname"><h3>Titel (Dateiname): </h3><input type="text" id="name"></div>
+<div style="clear:both;" id="dname"><h3>Titel (filename): </h3><input type="text" id="name"></div>
 <h3>Inhalt:</h3>
 <div style="clear:both;" id="dsource"><textarea path="source" id="source" class="formdata" rows="20"></textarea></div>
 <div style="clear:both;" id="dfile" style="display: none;"><input type="file" id="file" name="file" /></div>
-<div style="clear:both;"><input type="submit" value="Speichern" onclick="saveMdtex()"></div>
+<div style="clear:both;"><input type="submit" value="Save" onclick="saveMdtex()"></div>
 </div>
 
 <script>

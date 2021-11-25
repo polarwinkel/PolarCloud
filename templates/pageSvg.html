@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<code>{{ path }}</code>
+<nav id="pagenav">
+    <a onclick="pa.boolean('! WARNING !<br />really delete this?', 'delete');">Delete</a>
+</nav>
+<div id="content">
+    <textarea oninput="svgPreview()" id="svgCode" rows="5" cols="72">
+{{ content|safe }}
+    </textarea>
+    <div id="svgView">
+{{ content|safe }}
+    </div>
+</div>
+<input type="submit" value="Save" onclick="save()"></div>
+
+<hr />
+
+<details><summary>Snippets</summary>
+    <table style="border:1px solid black;">
+        <tr>
+            <th style="width:15%">Object</th>
+            <th style="width:15%">Example</th>
+            <th style="width:40%">Code</th>
+            <th style="width:30%">Info</th>
+        </tr>
+        <tr>
+            <td>Circle</td>
+            <td><svg><circle cx="100" cy="100" r="30" fill="red" /></svg></td>
+            <td><code>&lt;circle cx="100" cy="100" r="30" fill="red" /&gt;</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Ellipse</td>
+            <td><svg><ellipse cx="100" cy="50" rx="60" ry="30" fill="green"/></svg></td>
+            <td><code>&lt;ellipse cx="100" cy="50" rx="60" ry="30" fill="green"/&gt;</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Rectangle</td>
+            <td><svg><rect x="50" y="50" width="100" height="75" fill="#FF0" stroke="#000" stroke-width="10" /></svg></td>
+            <td><code>&lt;rect x="50" y="50" width="100" height="75" fill="#FF0" stroke="#000" stroke-width="10" /&gt;</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Line</td>
+            <td><svg><line x1="10" y1="10" x2="100" y2="100" stroke="#00F"/></svg></td>
+            <td><code>&lt;line x1="10" y1="10" x2="100" y2="100" stroke="#00F"/&gt;</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Polyline</td>
+            <td><svg><polyline points="10,10 99,99 50,10" style="fill:none;stroke:black;stroke-width:3"/></svg></td>
+            <td><code>&lt;polyline points="10,10 99,99 50,10" style="fill:none;stroke:black;stroke-width:3"/&gt;</code></td>
+            <td>Line connecting points</td>
+        </tr>
+        <tr>
+            <td>Path</td>
+            <td><svg><path d="M 10,100 L 50,50 v 50 h 100" fill="none" stroke="rgb(255,153,102)" stroke-width="2"/></svg></td>
+            <td><code>&lt;path d="M 10,100 L 50,50 v 50 h 100" fill="none" stroke="rgb(255,153,102)" stroke-width="2"/&gt;</code></td>
+            <td>
+                <ul>
+                <li>M = moveto</li>
+                <li>L = lineto</li>
+                <li>H = horizontal lineto</li>
+                <li>V = vertical lineto</li>
+                <li>C = curveto</li>
+                <li>S = smooth curveto</li>
+                <li>Q = quadratic Bézier curve</li>
+                <li>T = smooth quadratic Bézier curveto</li>
+                <li>A = elliptical Arc</li>
+                <li>Z = closepath</li>
+                </ul>
+                CAPS: absolute; lower: relative
+            </td>
+        </tr>
+        <tr>
+            <td>Polygon</td>
+            <td><svg><polygon points="50,120 100,25 200,100" fill="purple" stroke="#000" stroke-width="5" stroke-dasharray="40 10"/></svg></td>
+            <td><code>&lt;polygon points="50,120 100,25 200,100" fill="purple" stroke="#000" stroke-width="5" stroke-dasharray="40 10"/&gt;</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Text</td>
+            <td><svg><text x="20" y="50" text-anchor="right">Testtext $\sqrt{x^2}$</text></svg></td>
+            <td><code>&lt;text x="20" y="50" text-anchor="right"&gt;Testtext $\sqrt{x^2}$&lt;text&gt;</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Bezier-path (quadratic)</td>
+            <td><svg>
+                <path d="M 100,10 Q 10,50 200,150" fill="none" stroke="blue"/>
+                <path d="M 100,10 10,50 200,150" fill="none" stroke="gray"/>
+            </svg></td>
+            <td><code>
+                &lt;path d="M 100,10 Q 10,50 200,150" fill="none" stroke="blue"/&gt;<br />
+                &lt;path d="M 100,10 10,50 200,150" fill="none" stroke="gray"/&gt;
+            </code></td>
+            <td></td>
+        </tr>
+    </table>
+    <h3>Example</h3>
+    <img src="{{ relroot }}_static/test.svg" alt="svg-testimage" width="800" height="600" />
+</details>
+
+<hr />
+
+<div id="meta">
+    <p>Loading meta-information...</p>
+</div>
+
+<script src="{{ relroot }}_static/polalert.js"></script>
+<script>
+    var path = '{{ path }}';
+    var relroot = '{{ relroot }}';
+    var updateUrl = '{{ relroot }}_updatePage/{{ path }}';
+    var updateMetaUrl = '{{ relroot }}_updateMeta/{{ path }}';
+    var deleteUrl = '{{ relroot }}_delete/{{ path }}';
+    var meta = {{ meta|safe }};
+    
+    function showMeta() {
+        var m = document.getElementById('meta');
+        var found = false;
+        var out = '<hr />\n<a onclick="editMeta()">Edit Meta</a>';
+        out += '<h2>Meta-information</h2>';
+        out += '<h3>Description</h3>'
+        if (meta.hasOwnProperty('description')){
+            found = true;
+            out += meta.description;
+        }else{
+            out += '<p>-</p>'
+        }
+        out += '<h3>Keywords</h3>';
+        if (meta.hasOwnProperty('keywords')){
+            found = true;
+            out += meta.keywords;
+        }else{
+            out += '<p>-</p>';
+        }
+        if (found) {
+            m.innerHTML=out;
+        }else{
+            m.innerHTML='<hr />\n<a onclick="editMeta()">Add Meta</a>';
+        }
+    }
+    showMeta();
+    function editMeta() {
+        var m = document.getElementById('meta');
+        var out = '<hr />'
+        out += '<label for="description">Description:</label>'
+        out += '<textarea name="description" id="description" class="formdata" rows="5">';
+        if (meta.hasOwnProperty('description')){
+            out += meta.description;
+        }else{
+            out += ''
+        }
+        out += '</textarea>';
+        out += '<label for="keywords">Keywords:</label>'
+        out += '<textarea name="keywords" id="keywords" class="formdata" rows="2">';
+        if (meta.hasOwnProperty('keywords')){
+            out += meta.keywords;
+        }else{
+            out += ''
+        }
+        out += '</textarea>';
+        out += '<div style="clear:both;"><input type="submit" value="Save" onclick="saveMeta()"></div>\n';
+        m.innerHTML = out;
+    }
+    
+    async function save() {
+        const response = await fetch(updateUrl, {
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: document.getElementById('svgCode').value
+        });
+        location.reload();
+        //return response.json(); // parses JSON response into native JavaScript objects
+    }
+    function paOk(str) {
+        if (str == 'delete') {
+            deletePage();
+        }
+    }
+    function paNo(str) {
+        pa.message('Ok, nichts passiert!');
+    }
+    async function deletePage() {
+        const response = await fetch(deleteUrl, {
+            method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+        });
+        window.location.href = relroot;
+    }
+    async function saveMeta() {
+        var desc = document.getElementById('description').value;
+        var keyw = document.getElementById('keywords').value;
+        var m = {'description':desc, 'keywords':keyw};
+        const response = await fetch(updateMetaUrl, {
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: JSON.stringify(m)
+        });
+        location.reload();
+    }
+    function svgPreview() {
+        var svg = document.getElementById('svgCode').value;
+        document.getElementById('svgView').innerHTML = svg;
+    }
+</script>
+{% endblock %}
+

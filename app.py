@@ -33,7 +33,13 @@ def index():
     files = load.loadFolder(folder)
     #print(json.dumps(files, indent=4, sort_keys=True)) # show files-dict for debugging and reference
     filelist = json.dumps(files)
-    return render_template('index.html', relroot='./', filelist=filelist)
+    if os.path.isfile(folder+'/'+'index.mdtex'):
+        with open(folder+'/'+'index.mdtex', 'r') as f:
+            mdtex = f.read()
+    else:
+        mdtex = '(create a `index.mdtex` to show its content here)'
+    content = mdtex2html.convert(mdtex)
+    return render_template('index.html', relroot='./', filelist=filelist, content=content)
 
 @app.route('/_static/<path:path>')
 def send_static(path):
@@ -50,20 +56,46 @@ def page(path):
     relroot = './'
     for i in range(depth):
         relroot = relroot+'../'
-    # TODO: different handling depending on file ending, download for unknown
-    try:
-        with open(folder+'/'+path, 'r') as f:
-            mdtex = f.read()
-    except FileNotFoundError:
-        mdtex = '# 404 Error\n\nFile not found!'
-    except IsADirectoryError:
-        mdtex = '# 501 Error\n\nDirectory listing is not implemented!'
-    content = mdtex2html.convert(mdtex)
     meta = {}
     if os.path.isfile(folder+'/'+path+'.pcsc'):
         with open(folder+'/'+path+'.pcsc', 'r') as scF:
             meta = yaml.full_load(scF)
-    return render_template('page.html', relroot=relroot, path=path, content=content, meta=meta)
+    # TODO: different handling depending on file ending, download for unknown
+    fileExt = os.path.splitext(folder+'/'+path)[1]
+    if fileExt=='.mdtex' or fileExt=='.md':
+        try:
+            with open(folder+'/'+path, 'r') as f:
+                mdtex = f.read()
+        except FileNotFoundError:
+            mdtex = '# 404 Error\n\nFile not found!'
+        content = mdtex2html.convert(mdtex)
+        return render_template('pageMdtex.html', relroot=relroot, path=path, content=content, meta=meta)
+    elif fileExt == '.svg':
+        try:
+            with open(folder+'/'+path, 'r') as f:
+                content = f.read()
+        except FileNotFoundError:
+            content = mdtex2html.convert('# 404 Error\n\nFile not found!')
+        return render_template('pageSvg.html', relroot=relroot, path=path, content=content, meta=meta)
+    elif fileExt == '.download':
+        try:
+            with open(folder+'/'+path, 'r') as f:
+                content = f.read()
+        except FileNotFoundError:
+            content = mdtex2html.convert('# 404 Error\n\nFile not found!')
+            return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
+        filename = os.path.splitext(folder+'/'+path, 'r')[0]
+        return send_from_directory(directory=folder, path=filename)
+    else: 
+        try:
+            with open(folder+'/'+path, 'r') as f:
+                mdtex = '#TODO: offer download'
+        except FileNotFoundError:
+            mdtex = '# 404 Error\n\nFile not found!'
+        except IsADirectoryError:
+            mdtex = '# 501 Error\n\nDirectory listing is not implemented!'
+        content = mdtex2html.convert(mdtex)
+        return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
 
 @app.route('/_mdTeXCheatsheet', methods=['GET'])
 def sendMdTeXCheatSheet():
@@ -80,6 +112,7 @@ def getSource(path):
     return page
 
 @app.route('/_new/<path:path>', methods=['GET'])
+@app.route('/_new/', defaults={'path': './'}, methods=['GET'])
 def newPage(path):
     depth = path.count('/')
     relroot = '../'
@@ -88,6 +121,7 @@ def newPage(path):
     return render_template('new.html', relroot=relroot, path=path)
 
 @app.route('/_createContent/<path:path>', methods=['POST'])
+@app.route('/_createContent/', defaults={'path': './'}, methods=['POST'])
 def createContent(path):
     #postvars = request.data.decode('utf-8') 
     #print(postvars)

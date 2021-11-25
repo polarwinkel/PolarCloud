@@ -1,0 +1,27 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<circle cx="100" cy="100" r="30" fill="red" />
+<ellipse cx="250" cy="150" rx="60" ry="30" fill="green"/>
+<rect x="350" y="50" width="150" height="75" fill="#FF0" stroke="#000" stroke-width="10" />
+<polygon points="250,200 200,275 300,275" fill="purple"/>
+<path d="M 10,250 L 150,150 v 50 h 100" fill="none" stroke="rgb(255,153,102)" stroke-width="2"/>
+<line x1="10" y1="10" x2="100" y2="100" stroke="#00F"/>
+<polyline points="150,100 150,10 200,10 250,100" fill="none" stroke="green"/>
+<path d="M 10,250 L 150,150 v 50 h 100" fill="none" stroke="rgb(255,153,102)" stroke-width="5"/>
+<path d="M 600,100 Q 500,150 700,250" fill="none" stroke="blue"/>
+
+<a xlink:href="https://datenverdrahten.de/svglbc/pocketsvgeditor/">
+  <text x="30" y="350" font-size="24" text-decoration="underline" fill="red">Quelle: datenverdrahten.de/svglbc/pocketsvgeditor/</text>
+</a>
+
+<text x="20" y="380" font-size="24">Fancy shit:</text>
+<defs>
+  <linearGradient id="gra">
+    <stop offset="0%" stop-color="#F00"/>
+    <stop offset="50%" stop-color="#FF0"/>
+    <stop offset="100%" stop-color="#00F"/>
+  </linearGradient>
+</defs>
+<rect x="20" y="400" width="0" height="40" fill="url(#gra)" rx="10">
+  <animate attributeType="XML" attributeName="width" begin="3s" dur="10s" from="0" to="800" fill="freeze"/>
+</rect>
+</svg>

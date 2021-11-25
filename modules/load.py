@@ -25,7 +25,7 @@ def setInDict(dic, keys, name, filename, ext, scYaml=''):
 def loadFolder(folder):
     '''recursive search for files in a folder, returning as dict, with sc.yaml as additional "sidecar-info"'''
     pages={}
-    files = glob.glob(folder+'/**', recursive=True)
+    files = sorted(glob.glob(folder+'/**', recursive=True))
     for f in files:
         if not f.endswith('.pcsc') and os.path.isfile(f):
             filename=os.path.basename(f)
