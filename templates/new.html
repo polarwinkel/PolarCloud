@@ -11,11 +11,11 @@
     <select name="type" id="type" onchange="changeType()">
         <option value="mdtex" selected>mdtex</option>
         <option value="svg">svg</option>
-        <option value="file">TODO: File upload</option>
+        <option value="file">File upload</option>
         <option value="folder">folder</option>
     </select>
 </div>
-<div style="clear:both;" id="dname"><h3>Title (filename): </h3><input type="text" id="name"></div>
+<div style="clear:both;" id="dname"><h3>Title (files will be renamed if set - rememter the file extension!): </h3><input type="text" id="name"></div>
 <h3>Content:</h3>
 <div style="clear:both;" id="dsource"><textarea path="source" id="source" class="formdata" rows="20"></textarea></div>
 <div style="clear:both;"><input type="file" id="file" name="file" style="display: none;" /></div>
@@ -30,6 +30,7 @@
     var path = '{{ path }}';
     var relroot = '{{ relroot }}';
     var createUrl = relroot+'_createContent/'+path;
+    var uploadUrl = relroot+'_uploadFile/'+path;
     
     function changeType(){
         type = document.getElementById('type').value;
@@ -83,7 +84,25 @@
                 window.location.href = (relroot+text);
             });
         } else {
-            
+            var formData = new FormData();
+            var file = document.getElementById('file').files[0];
+            formData.append('name', name);
+            formData.append('description', description);
+            formData.append('keywords', keywords);
+            formData.append('file', file);
+            const response = await fetch(uploadUrl, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                //mode: 'cors', // no-cors, *cors, same-origin
+                //cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+                //credentials: 'same-origin', // include, *same-origin, omit
+                //headers: {
+                //    'Content-Type': 'text/plain'
+                //},
+                body: formData
+            });
+            response.text().then(function (text) {
+                window.location.href = (relroot+text);
+            });
         }
         //return response.json(); // parses JSON response into native JavaScript objects
     }    

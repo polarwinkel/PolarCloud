@@ -63,7 +63,7 @@ def page(path):
             meta = yaml.full_load(scF)
             if meta == None:
                 meta = {}
-    # TODO: different handling depending on file ending, download for unknown
+    # TODO: different handling depending on file ending, file-view for unknown
     fileExt = os.path.splitext(folder+'/'+path)[1]
     if fileExt=='.mdtex' or fileExt=='.md':
         try:
@@ -80,25 +80,21 @@ def page(path):
         except FileNotFoundError:
             content = mdtex2html.convert('# 404 Error\n\nFile not found!')
         return render_template('pageSvg.html', relroot=relroot, path=path, content=content, meta=meta)
-    elif fileExt == '.download':
-        try:
-            with open(folder+'/'+path, 'r') as f:
-                content = f.read()
-        except FileNotFoundError:
-            content = mdtex2html.convert('# 404 Error\n\nFile not found!')
-            return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
-        filename = os.path.splitext(folder+'/'+path, 'r')[0]
-        return send_from_directory(directory=folder, path=filename)
     else: 
         try:
             with open(folder+'/'+path, 'r') as f:
-                mdtex = '#TODO: offer download'
+                mdtex = '['+path+']('+relroot+'_download/'+path+')'
         except FileNotFoundError:
             mdtex = '# 404 Error\n\nFile not found!'
         except IsADirectoryError:
             mdtex = '# 501 Error\n\nDirectory listing is not implemented!'
         content = mdtex2html.convert(mdtex)
         return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
+
+@app.route('/_download/<path:filename>', methods=['GET'])
+def downloadFile(filename):
+    '''download a file from the pagetree'''
+    return send_from_directory(directory=folder, filename=filename)
 
 @app.route('/_mdTeXCheatsheet', methods=['GET'])
 def sendMdTeXCheatSheet():
@@ -153,6 +149,33 @@ def createContent(path):
             m['created'] = str(datetime.now())
             m['edited'] = str(datetime.now())
             yaml.dump(m, f, allow_unicode=True)
+    return path+'/'+filename
+
+@app.route('/_uploadFile/<path:path>', methods=['POST'])
+@app.route('/_uploadFile/', defaults={'path': './'}, methods=['POST'])
+def uploadFile(path):
+    print(request.files)
+    if 'file' not in request.files:
+        return 'ERROR: no file received'
+    uploadFile = request.files['file']
+    # no file => empty file without filename:
+    if uploadFile.filename == '':
+        return 'ERROR: no filename received'
+    if uploadFile:
+        if request.form.get('name') == '':
+            filename = uploadFile.filename;
+        else:
+            filename = request.form.get('name')
+        filepath = folder+'/'+path
+        uploadFile.save(os.path.join(filepath, filename))
+        with open(filepath+filename+'.pcsc', 'w') as f:
+            m={}
+            m['description'] = str(request.form.get('description'))
+            m['keywords'] = str(request.form.get('keywords'))
+            m['created'] = str(datetime.now())
+            m['edited'] = str(datetime.now())
+            yaml.dump(m, f, allow_unicode=True)
+        #return redirect(url_for('download_file', name=filename))
     return path+'/'+filename
 
 @app.route('/_mdtex2html', methods=['POST'])
