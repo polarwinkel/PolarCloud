@@ -169,7 +169,7 @@ def uploadFile(path):
         if request.form.get('name') == '':
             filename = uploadFile.filename;
         else:
-            filename = request.form.get('name')
+            filename = request.form.get('name')+os.path.splitext(uploadFile.filename)[1]
         filepath = folder+'/'+path
         uploadFile.save(os.path.join(filepath, filename))
         with open(filepath+filename+'.pcsc', 'w') as f:
