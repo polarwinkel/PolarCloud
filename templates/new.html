@@ -81,7 +81,7 @@
                 body: JSON.stringify(send)
             });
             response.text().then(function (text) {
-                window.location.href = (relroot+text);
+                window.location.href = relroot+text;
             });
         } else {
             var formData = new FormData();
@@ -92,19 +92,12 @@
             formData.append('file', file);
             const response = await fetch(uploadUrl, {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                //mode: 'cors', // no-cors, *cors, same-origin
-                //cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
-                //credentials: 'same-origin', // include, *same-origin, omit
-                //headers: {
-                //    'Content-Type': 'text/plain'
-                //},
                 body: formData
             });
             response.text().then(function (text) {
-                window.location.href = (relroot+text);
+                window.location.href = relroot+text;
             });
         }
-        //return response.json(); // parses JSON response into native JavaScript objects
     }    
 </script>
 {% endblock %}

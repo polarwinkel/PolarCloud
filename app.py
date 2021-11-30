@@ -122,6 +122,10 @@ def newPage(path):
     for i in range(depth):
         relroot = relroot+'../'    
     return render_template('new.html', relroot=relroot, path=path)
+@app.route('/_exists', methods=['GET'])
+def exists():
+    content = mdtex2html.convert('#ERROR: Name exists\n please go back and choose a different name.')
+    return render_template('pageMdtex.html', relroot='./', path='./', content=content)
 
 @app.route('/_createContent/<path:path>', methods=['POST'])
 @app.route('/_createContent/', defaults={'path': './'}, methods=['POST'])
@@ -138,22 +142,28 @@ def createContent(path):
         filename = fname+'.svg'
         meta = True
     elif request.json['type'] == 'folder':
-        os.mkdir(folder+'/'+path+'/'+fname)
-        return '/'
+        if os.path.isdir(folder+'/'+path+fname):
+            return '_exists'
+        else:
+            os.mkdir(folder+'/'+path+fname)
+            return '/'
     else:
         return 'ERROR 501: Type not implemented'
-    filepath = folder+'/'+path+'/'+filename
-    with open(filepath, 'w') as f:
-        f.write(str(request.json['source']))
-    if meta:
-        with open(filepath+'.pcsc', 'w') as f:
-            m={}
-            m['description'] = str(request.json['description'])
-            m['keywords'] = str(request.json['keywords'])
-            m['created'] = str(datetime.now())
-            m['edited'] = str(datetime.now())
-            yaml.dump(m, f, allow_unicode=True)
-    return path+'/'+filename
+    filepath = folder+'/'+path+filename
+    if os.path.isfile(filepath):
+        return '_exists'
+    else:
+        with open(filepath, 'w') as f:
+            f.write(str(request.json['source']))
+        if meta:
+            with open(filepath+'.pcsc', 'w') as f:
+                m={}
+                m['description'] = str(request.json['description'])
+                m['keywords'] = str(request.json['keywords'])
+                m['created'] = str(datetime.now())
+                m['edited'] = str(datetime.now())
+                yaml.dump(m, f, allow_unicode=True)
+        return path+filename
 
 @app.route('/_uploadFile/<path:path>', methods=['POST'])
 @app.route('/_uploadFile/', defaults={'path': './'}, methods=['POST'])
