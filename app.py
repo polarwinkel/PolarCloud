@@ -113,7 +113,11 @@ def getSource(path):
 @app.route('/_new/<path:path>', methods=['GET'])
 @app.route('/_new/', defaults={'path': './'}, methods=['GET'])
 def newPage(path):
-    depth = path.count('/')
+    print(path)
+    if path!='./':
+        depth = path.count('/')
+    else:
+        depth=0
     relroot = '../'
     for i in range(depth):
         relroot = relroot+'../'    
