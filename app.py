@@ -142,7 +142,7 @@ def createContent(path):
         return '/'
     else:
         return 'ERROR 501: Type not implemented'
-    filepath = folder+'/'+path+'/'+filename
+    filepath = folder+'/'+path+filename
     with open(filepath, 'w') as f:
         f.write(str(request.json['source']))
     if meta:
