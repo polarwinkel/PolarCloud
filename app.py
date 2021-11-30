@@ -138,7 +138,7 @@ def createContent(path):
         filename = fname+'.svg'
         meta = True
     elif request.json['type'] == 'folder':
-        os.mkdir(folder+'/'+path+'/'+fname)
+        os.mkdir(folder+'/'+path+fname)
         return '/'
     else:
         return 'ERROR 501: Type not implemented'
@@ -153,7 +153,7 @@ def createContent(path):
             m['created'] = str(datetime.now())
             m['edited'] = str(datetime.now())
             yaml.dump(m, f, allow_unicode=True)
-    return path+'/'+filename
+    return path+filename
 
 @app.route('/_uploadFile/<path:path>', methods=['POST'])
 @app.route('/_uploadFile/', defaults={'path': './'}, methods=['POST'])
