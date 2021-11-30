@@ -80,8 +80,15 @@
         for (item in dict) {
             if (item == '.') {
                 for (item in dict['.']) {
+                    console.log(item);
                     if (item.toLowerCase().includes(word)) {
                         result.push([path, item]);
+                    } else {
+                        try {
+                            if (dict['.'][item].scYaml.keywords.includes(word)) {
+                                result.push([path, item]);
+                            }
+                        } catch (e) {};
                     }
                 }
             } else {
@@ -102,7 +109,6 @@
                 out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a></li>';
             }
             out += '</ul>';
-            out += '<p>TODO: Include keywords/meta in the search</p>';
         } else if (word.length > 0) {
             var out = '(min of 3 chars)';
         } else {
