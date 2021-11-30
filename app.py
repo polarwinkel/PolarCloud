@@ -120,8 +120,13 @@ def newPage(path):
         depth=0
     relroot = '../'
     for i in range(depth):
-        relroot = relroot+'../'    
+        relroot = relroot+'../'
     return render_template('new.html', relroot=relroot, path=path)
+
+@app.route('/_exists', methods=['GET'])
+def exists():
+    content = mdtex2html.convert('#ERROR: Name exists\n please go back and choose a different name.')
+    return render_template('pageMdtex.html', relroot='./', path='./', content=content)
 
 @app.route('/_createContent/<path:path>', methods=['POST'])
 @app.route('/_createContent/', defaults={'path': './'}, methods=['POST'])
