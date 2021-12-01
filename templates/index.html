@@ -88,7 +88,11 @@
                         }
                     } else if (dict['.'][item].scYaml.keywords) {
                         if (dict['.'][item].scYaml.keywords.toLowerCase().includes(word)) {
-                            result.push([path, item]);
+                            if (dict['.'][item].scYaml.description) {
+                                result.push([path, item, dict['.'][item].scYaml.description]);
+                            } else {
+                                result.push([path, item, '']);
+                            }
                         }
                     }
                 }
