@@ -63,7 +63,6 @@ def page(path):
             meta = yaml.full_load(scF)
             if meta == None:
                 meta = {}
-    # TODO: different handling depending on file ending, file-view for unknown
     fileExt = os.path.splitext(folder+'/'+path)[1]
     if fileExt=='.mdtex' or fileExt=='.md':
         try:
@@ -182,6 +181,8 @@ def uploadFile(path):
         else:
             filename = request.form.get('name')+os.path.splitext(uploadFile.filename)[1]
         filepath = folder+'/'+path
+        if os.path.isfile(filepath):
+            return '_exists'
         uploadFile.save(os.path.join(filepath, filename))
         with open(filepath+filename+'.pcsc', 'w') as f:
             m={}
@@ -190,7 +191,6 @@ def uploadFile(path):
             m['created'] = str(datetime.now())
             m['edited'] = str(datetime.now())
             yaml.dump(m, f, allow_unicode=True)
-        #return redirect(url_for('download_file', name=filename))
     return path+'/'+filename
 
 @app.route('/_mdtex2html', methods=['POST'])
@@ -245,6 +245,8 @@ def updateMeta(path):
 def move(path):
     data = json.loads(request.data.decode('utf-8'))
     filename = os.path.basename(path)
+    if os.path.isfile(folder+'/'+data['destPath']+'/'+filename):
+        return '_exists'
     os.rename(folder+'/'+path, folder+'/'+data['destPath']+'/'+filename)
     fileMetaPath = folder+'/'+path+'.pcsc'
     if os.path.exists(fileMetaPath):
