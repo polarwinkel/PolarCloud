@@ -38,7 +38,7 @@ def index():
         with open(folder+'/'+'index.mdtex', 'r') as f:
             mdtex = f.read()
     else:
-        mdtex = '(create a `index.mdtex` to show its content here)'
+        mdtex = '(create an `index.mdtex` to show its content here)'
     content = mdtex2html.convert(mdtex)
     return render_template('index.html', relroot='./', filelist=filelist, content=content)
 
