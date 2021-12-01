@@ -86,7 +86,8 @@ def page(path):
         except FileNotFoundError:
             mdtex = '# 404 Error\n\nFile not found!'
         except IsADirectoryError:
-            mdtex = '# 501 Error\n\nDirectory listing is not implemented!'
+            content = mdtex2html.convert('TODO: implement rename/delete')
+            return render_template('pageDir.html', relroot=relroot, path=path, content=content)
         content = mdtex2html.convert(mdtex)
         return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
 

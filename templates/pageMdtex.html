@@ -5,7 +5,7 @@
 <nav id="pagenav">
     <a onclick="edit()">edit</a> | 
     <a onclick="pa.input('Rename to:');">rename</a> | 
-    <a onclick="pa.boolean('! ACHTUNG !<br />Wirklich löschen?', 'delete');">delete</a>
+    <a onclick="pa.boolean('! WARNING !<br />really delete?', 'delete');">delete</a>
 </nav>
 <div id="content">
 {{ content|safe }}
@@ -83,7 +83,7 @@
             out += ''
         }
         out += '</textarea>';
-        out += '<div style="clear:both;"><input type="submit" value="Speichern" onclick="saveMeta()"></div>\n';
+        out += '<div style="clear:both;"><input type="submit" value="save" onclick="saveMeta()"></div>\n';
         m.innerHTML = out;
     }
     
@@ -93,7 +93,7 @@
         content = '<div style="clear:both;"><textarea path="source" id="source" class="formdata" rows="20">\n';
         content = content+source;
         content = content+'</textarea></div>';
-        content = content+'<div style="clear:both;"><input type="submit" value="Speichern" onclick="save()"></div>\n';
+        content = content+'<div style="clear:both;"><input type="submit" value="save" onclick="save()"></div>\n';
         document.getElementById('content').innerHTML = content;
     }
     async function save() {
@@ -116,7 +116,7 @@
         }
     }
     function paNo(str) {
-        pa.message('Ok, nichts passiert!');
+        pa.message('Ok, nothing happened!');
     }
     async function deletePage() {
         const response = await fetch(deleteUrl, {
@@ -139,10 +139,6 @@
             body: JSON.stringify(m)
         });
         location.reload();
-    }
-    function svgPreview() {
-        svg = document.getElementById("svgCode").value;
-        document.getElementById("svgView").innerHTML = svg;
     }
     async function paInputReceive(inputtext) {
         if (inputtext != false) {

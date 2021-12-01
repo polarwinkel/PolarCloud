@@ -14,7 +14,7 @@
 {{ content|safe }}
     </div>
 </div>
-<input type="submit" value="Save" onclick="save()"></div>
+<input type="submit" value="save" onclick="save()"></div>
 
 <hr />
 
@@ -179,7 +179,7 @@
             out += ''
         }
         out += '</textarea>';
-        out += '<div style="clear:both;"><input type="submit" value="Save" onclick="saveMeta()"></div>\n';
+        out += '<div style="clear:both;"><input type="submit" value="save" onclick="saveMeta()"></div>\n';
         m.innerHTML = out;
     }
     
@@ -203,7 +203,7 @@
         }
     }
     function paNo(str) {
-        pa.message('Ok, nichts passiert!');
+        pa.message('Ok, nothing happened!');
     }
     async function deletePage() {
         const response = await fetch(deleteUrl, {
