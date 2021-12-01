@@ -243,10 +243,14 @@ def updateMeta(path):
 
 @app.route('/_move/<path:path>', methods=['PUT'])
 def move(path):
+    print(request.data.decode('utf-8'))
     data = json.loads(request.data.decode('utf-8'))
-    filename = os.path.basename(path)
+    if 'filename' in data:
+        filename = data['filename']
+    else:
+        filename = os.path.basename(path)
     if os.path.isfile(folder+'/'+data['destPath']+'/'+filename):
-        return '_exists'
+        return 'ERROR: file exists'
     os.rename(folder+'/'+path, folder+'/'+data['destPath']+'/'+filename)
     fileMetaPath = folder+'/'+path+'.pcsc'
     if os.path.exists(fileMetaPath):
