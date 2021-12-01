@@ -80,15 +80,16 @@
         for (item in dict) {
             if (item == '.') {
                 for (item in dict['.']) {
-                    console.log(item);
                     if (item.toLowerCase().includes(word)) {
-                        result.push([path, item]);
-                    } else {
-                        try {
-                            if (dict['.'][item].scYaml.keywords.includes(word)) {
-                                result.push([path, item]);
-                            }
-                        } catch (e) {};
+                        if (dict['.'][item].scYaml.description) {
+                            result.push([path, item, dict['.'][item].scYaml.description]);
+                        } else {
+                            result.push([path, item, '']);
+                        }
+                    } else if (dict['.'][item].scYaml.keywords) {
+                        if (dict['.'][item].scYaml.keywords.toLowerCase().includes(word)) {
+                            result.push([path, item]);
+                        }
                     }
                 }
             } else {
@@ -106,7 +107,11 @@
             var out = '<h3>Results:</h3>'
             out += '<ul>';
             for (var i = 0; i < list.length; i++) {
-                out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a></li>';
+                out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a>';
+                if (list.length > 2) {
+                    out +='<br />'+list[i][2];
+                }
+                out += '</li>';
             }
             out += '</ul>';
         } else if (word.length > 0) {
