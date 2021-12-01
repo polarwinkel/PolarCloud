@@ -3,7 +3,8 @@
 {% block content %}
 <code>{{ path }}</code>
 <nav id="pagenav">
-    <a onclick="pa.boolean('! WARNING !<br />really delete this?', 'delete');">Delete</a>
+    <a onclick="pa.input('Rename to:');">rename</a> | 
+    <a onclick="pa.boolean('! WARNING !<br />really delete this?', 'delete');">delete</a>
 </nav>
 <div id="content">
     <textarea oninput="svgPreview()" id="svgCode" rows="5" cols="72">
@@ -229,6 +230,31 @@
     function svgPreview() {
         var svg = document.getElementById('svgCode').value;
         document.getElementById('svgView').innerHTML = svg;
+    }
+    async function paInputReceive(inputtext) {
+        if (inputtext != false) {
+            var moveUrl = relroot+'_move/'+path;
+            var dest = path.substring(0, path.lastIndexOf('/'));
+            var filename = inputtext+path.substring(path.lastIndexOf('.'));
+            var m = {'filePath':moveUrl, 'destPath':dest, filename:filename};
+            const response = await fetch(moveUrl, {
+                method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+                mode: 'cors', // no-cors, *cors, same-origin
+                cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+                credentials: 'same-origin', // include, *same-origin, omit
+                headers: {
+                    'Content-Type': 'text/plain'
+                },
+                body: JSON.stringify(m)
+            });
+            response.text().then(function (text) {
+                if (text=='0'){
+                    window.location.href = relroot+dest+'/'+filename;
+                } else {
+                    pa.error('ERROR: <br />'+text);
+                }
+            });
+        }
     }
 </script>
 {% endblock %}
