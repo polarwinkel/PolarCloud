@@ -78,15 +78,15 @@
     function findWord(word, dict, path) {
         var result = [];
         for (item in dict) {
-            if (item == '.') {
+            if (item == '.') { // search files in this folder
                 for (item in dict['.']) {
-                    if (item.toLowerCase().includes(word)) {
+                    if (item.toLowerCase().includes(word)) { //filename
                         if (dict['.'][item].scYaml.description) {
                             result.push([path, item, dict['.'][item].scYaml.description]);
                         } else {
                             result.push([path, item, '']);
                         }
-                    } else if (dict['.'][item].scYaml.keywords) {
+                    } else if (dict['.'][item].scYaml.keywords) { //keywords
                         if (dict['.'][item].scYaml.keywords.toLowerCase().includes(word)) {
                             if (dict['.'][item].scYaml.description) {
                                 result.push([path, item, dict['.'][item].scYaml.description]);
@@ -96,7 +96,7 @@
                         }
                     }
                 }
-            } else {
+            } else { // recursive search subfolders
                 result = [].concat(result, findWord(word, dict[item], path+item+'/'));
             }
         }
@@ -112,7 +112,7 @@
             out += '<ul>';
             for (var i = 0; i < list.length; i++) {
                 out += '<li><a href="{{ relroot }}'+list[i][0]+list[i][1]+'">'+list[i][0]+list[i][1]+'</a>';
-                if (list.length > 2) {
+                if (list[i][2] != '') {
                     out +='<br />'+list[i][2];
                 }
                 out += '</li>';
