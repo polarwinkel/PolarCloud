@@ -86,7 +86,7 @@ def page(path):
         except FileNotFoundError:
             mdtex = '# 404 Error\n\nFile not found!'
         except IsADirectoryError:
-            content = mdtex2html.convert('TODO: implement rename/delete')
+            content = mdtex2html.convert('(this view is (still) just for renaming/deleting folders)')
             return render_template('pageDir.html', relroot=relroot, path=path, content=content)
         content = mdtex2html.convert(mdtex)
         return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
@@ -113,7 +113,6 @@ def getSource(path):
 @app.route('/_new/<path:path>', methods=['GET'])
 @app.route('/_new/', defaults={'path': './'}, methods=['GET'])
 def newPage(path):
-    print(path)
     if path!='./':
         depth = path.count('/')
     else:
@@ -169,7 +168,6 @@ def createContent(path):
 @app.route('/_uploadFile/<path:path>', methods=['POST'])
 @app.route('/_uploadFile/', defaults={'path': './'}, methods=['POST'])
 def uploadFile(path):
-    print(request.files)
     if 'file' not in request.files:
         return 'ERROR: no file received'
     uploadFile = request.files['file']
@@ -244,7 +242,6 @@ def updateMeta(path):
 
 @app.route('/_move/<path:path>', methods=['PUT'])
 def move(path):
-    print(request.data.decode('utf-8'))
     data = json.loads(request.data.decode('utf-8'))
     if 'filename' in data:
         filename = data['filename']
@@ -277,10 +274,17 @@ def updateSettings():
 @app.route('/_delete/<path:path>', methods=['DELETE'])
 def deletePage(path):
     if os.path.exists(folder+'/'+path):
-        os.remove(folder+'/'+path)
-        if os.path.exists(folder+'/'+path+'.pcsc'):
-            os.remove(folder+'/'+path+'.pcsc')
-        return '0'
+        if path.endswith('/'):
+            if len(os.listdir(folder+'/'+path)) == 0:
+                os.rmdir(folder+'/'+path)
+                return '0'
+            else:
+                return 'Folder is not empty!'
+        else:
+            os.remove(folder+'/'+path)
+            if os.path.exists(folder+'/'+path+'.pcsc'):
+                os.remove(folder+'/'+path+'.pcsc')
+            return '0'
     else:
         return 'ERROR: file not found!'
 

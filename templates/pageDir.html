@@ -16,39 +16,31 @@
     var relroot = '{{ relroot }}';
     var deleteUrl = '{{ relroot }}_delete/{{ path }}';
     
-    async function save() {
-        const response = await fetch(updateUrl, {
-            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
-            mode: 'cors', // no-cors, *cors, same-origin
-            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                'Content-Type': 'text/plain'
-            },
-            body: document.getElementById('source').value
-        });
-        location.reload();
-        //return response.json(); // parses JSON response into native JavaScript objects
-    }
     function paOk(str) {
         if (str == 'delete') {
             deletePage();
         }
     }
     function paNo(str) {
-        pa.message('Ok, nothing happened!');
+        pa.message('No worries, nothing happened!');
     }
     async function deletePage() {
         const response = await fetch(deleteUrl, {
             method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
         });
-        window.location.href = relroot;
+        response.text().then(function (text) {
+            if (text=='0'){
+                window.location.href = relroot;
+            } else {
+                pa.error('ERROR: <br />'+text);
+            }
+        });
     }
     async function paInputReceive(inputtext) {
         if (inputtext != false) {
             var moveUrl = relroot+'_move/'+path;
-            var dest = path.substring(0, path.lastIndexOf('/'));
-            var filename = inputtext+path.substring(path.lastIndexOf('.'));
+            var dest = path.substring(0, path.lastIndexOf('/', -1));
+            var filename = inputtext+path.substring(path.lastIndexOf('/'));
             var m = {'filePath':moveUrl, 'destPath':dest, filename:filename};
             const response = await fetch(moveUrl, {
                 method: 'PUT', // *GET, POST, PUT, DELETE, etc.
@@ -62,7 +54,7 @@
             });
             response.text().then(function (text) {
                 if (text=='0'){
-                    window.location.href = relroot+dest+'/'+filename;
+                    window.location.href = relroot+'/';
                 } else {
                     pa.error('ERROR: <br />'+text);
                 }
@@ -71,4 +63,3 @@
     }
 </script>
 {% endblock %}
-

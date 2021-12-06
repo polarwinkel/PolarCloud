@@ -59,6 +59,7 @@
                 result += '<li>';
                 result += '<details><summary ondrop="drop(event)" ondragover="allowDrop(event)" id="'+subpath+key+'">';
                 result += key+' <a href="'+relroot+'_new/'+subpath+key+'/">&CirclePlus;</a>';
+                result += ' <a href="'+relroot+subpath+key+'/">&#128065;</a>';
                 result += '</summary><ul>';
                 result += renderFiletree(tree[key], subpath+key+'/');
                 result += '</ul></details></li>\n';
