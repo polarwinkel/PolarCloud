@@ -33,17 +33,22 @@
     var uploadUrl = relroot+'_uploadFile/'+path;
     
     function changeType(){
+        var defaultSvg = '<svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\n';
+        defaultSvg += '    <rect x="0" y="0" width="600" height="400" style="fill:#fff;stroke:black;stroke-width:20"/>\n'
+        defaultSvg += '</svg>';
         type = document.getElementById('type').value;
         if (type=='mdtex'){
             document.getElementById('dsource').style.display = 'block';
             document.getElementById('file').style.display = 'none';
             document.getElementById('description').style.display = 'block';
             document.getElementById('keywords').style.display = 'block';
+            document.getElementById('source').value = '';
         } else if (type=='svg'){
             document.getElementById('dsource').style.display = 'block';
             document.getElementById('file').style.display = 'none';
             document.getElementById('description').style.display = 'block';
             document.getElementById('keywords').style.display = 'block';
+            document.getElementById('source').value = defaultSvg;
         } else if (type=='file'){
             document.getElementById('dsource').style.display = 'none';
             document.getElementById('file').style.display = 'block';

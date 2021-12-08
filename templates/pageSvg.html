@@ -45,12 +45,6 @@
             <td></td>
         </tr>
         <tr>
-            <td>Line</td>
-            <td><svg><line x1="10" y1="10" x2="100" y2="100" stroke="#00F"/></svg></td>
-            <td><code>&lt;line x1="10" y1="10" x2="100" y2="100" stroke="#00F"/&gt;</code></td>
-            <td></td>
-        </tr>
-        <tr>
             <td>Polyline</td>
             <td><svg><polyline points="10,10 99,99 50,10" style="fill:none;stroke:black;stroke-width:3"/></svg></td>
             <td><code>&lt;polyline points="10,10 99,99 50,10" style="fill:none;stroke:black;stroke-width:3"/&gt;</code></td>
@@ -85,7 +79,7 @@
         <tr>
             <td>Text</td>
             <td><svg><text x="20" y="50" text-anchor="right">Testtext $\sqrt{x^2}$</text></svg></td>
-            <td><code>&lt;text x="20" y="50" text-anchor="right"&gt;Testtext $\sqrt{x^2}$&lt;text&gt;</code></td>
+            <td><code>&lt;text x="20" y="50" text-anchor="right"&gt;Testtext $\sqrt{x^2}$&lt;/text&gt;</code></td>
             <td></td>
         </tr>
         <tr>
@@ -103,6 +97,43 @@
     </table>
     <h3>Example</h3>
     <img src="{{ relroot }}_static/test.svg" alt="svg-testimage" width="800" height="600" />
+</details>
+<details><summary>Symbols</summary>
+    <p><i>Hint: This details-page makes use of the deprecated <code>&lt;xmp&gt;</code>-tag. Let's hope that browsers keep supporting it.</i></p>
+    <p>Use these i.e. with: <code>&lt;use href="#measure" x="100" y="200"/&gt;</code></p>
+    <table style="border:1px solid black;">
+        <tr>
+            <th>Symbol</th>
+            <th>Example</th>
+            <th>Code</th>
+        </tr>
+        <tr>
+            <td>Measure</td>
+            <td><svg>
+    <circle r="20" cx="25" cy="25" style="fill:none;stroke:black;stroke-width:2"/>
+    <path d="m 1,49 l 48,-48 v 12 v -12 h -12" fill="none" stroke="black" stroke-width="2"/>
+            </svg></td>
+            <td>
+<xmp><symbol id="measure">
+    <circle r="20" cx="25" cy="25" style="fill:none;stroke:black;stroke-width:2"/>
+    <path d="m 1,49 l 48,-48 v 12 v -12 h -12" fill="none" stroke="black" stroke-width="2"/>
+</symbol></xmp>
+            </td>
+        </tr>
+        <tr>
+            <td>Electron</td>
+            <td><svg>
+    <circle r="6" cx="7" cy="7" style="fill:none;stroke:blue;stroke-width:2"/>
+    <path d="m 3,7 h 8" fill="none" stroke="blue" stroke-width="2"/>
+            </svg></td>
+            <td>
+<xmp><symbol id="electron">
+    <circle r="6" cx="7" cy="7" style="fill:none;stroke:blue;stroke-width:2"/>
+    <path d="m 3,7 h 8" fill="none" stroke="blue" stroke-width="2"/>
+</symbol></xmp>
+            </td>
+        </tr>
+    </table>
 </details>
 
 <hr />
