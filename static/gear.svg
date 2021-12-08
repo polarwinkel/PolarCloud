@@ -1,0 +1,19 @@
+<svg height="1em" width="1em" viewbox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <circle cx="8" cy="8" r="4.5" style="fill:none;stroke:#0f0;stroke-width:3"/>
+    <polyline points="3,6 0,7 0,9 3,10" style="fill:#0f0;"/>
+    <g transform="rotate(60 8 8)">
+        <polyline points="3,6 0,7 0,9 3,10" style="fill:#0f0;"/>
+    </g>
+    <g transform="rotate(120 8 8)">
+        <polyline points="3,6 0,7 0,9 3,10" style="fill:#0f0;"/>
+    </g>
+    <g transform="rotate(180 8 8)">
+        <polyline points="3,6 0,7 0,9 3,10" style="fill:#0f0;"/>
+    </g>
+    <g transform="rotate(240 8 8)">
+        <polyline points="3,6 0,7 0,9 3,10" style="fill:#0f0;"/>
+    </g>
+    <g transform="rotate(300 8 8)">
+        <polyline points="3,6 0,7 0,9 3,10" style="fill:#0f0;"/>
+    </g>
+</svg>
