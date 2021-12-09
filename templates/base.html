@@ -29,9 +29,9 @@
     <body id="body">
         <div id="page">
             <p id="nav" class="no-print" style="width:100%; background-color:080; text-align:right;">
-                <a href="{{ relroot }}">&#8962;</a> | 
-                <a href="{{ relroot }}_data">&#128436;</a> | 
-                <a href="{{ relroot }}_mdTeXCheatsheet">&#128712;</a> | 
+                <a href="{{ relroot }}"><img src="{{ relroot }}_static/home.svg" alt="home"/></a> | 
+                <a href="{{ relroot }}_data"><img src="{{ relroot }}_static/data.svg" alt="data"/></a> | 
+                <a href="{{ relroot }}_mdTeXCheatsheet"><img src="{{ relroot }}_static/info.svg" alt="cheatsheet"/></a> | 
                 <a href="{{ relroot }}_settings"><img src="{{ relroot }}_static/gear.svg" alt="settings"/></a>
             </p>
         {% block content %}Content{% endblock %}

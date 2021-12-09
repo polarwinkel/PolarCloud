@@ -58,8 +58,8 @@
             } else {
                 result += '<li>';
                 result += '<details><summary ondrop="drop(event)" ondragover="allowDrop(event)" id="'+subpath+key+'">';
-                result += key+' <a href="'+relroot+'_new/'+subpath+key+'/">&CirclePlus;</a>';
-                result += ' <a href="'+relroot+subpath+key+'/">&#128065;</a>';
+                result += key+' <a href="'+relroot+'_new/'+subpath+key+'/"><img src="{{ relroot }}_static/plus.svg" alt="add"/></a>';
+                result += ' <a href="'+relroot+subpath+key+'/"><img src="{{ relroot }}_static/eye.svg" alt="view"/></a>';
                 result += '</summary><ul>';
                 result += renderFiletree(tree[key], subpath+key+'/');
                 result += '</ul></details></li>\n';
@@ -69,7 +69,7 @@
     }
     function loadFilelist() {
         var result = '<h2>File Tree</h2><ul>\n';
-        result += '<p ondrop="drop(event)" ondragover="allowDrop(event)" id="./">./<a href="'+relroot+'_new/.">&CirclePlus;</a></p>';
+        result += '<p ondrop="drop(event)" ondragover="allowDrop(event)" id="./">./<a href="'+relroot+'_new/."><img src="{{ relroot }}_static/plus.svg" alt="add"/></a></p>';
         result += renderFiletree(filelist, '');
         result += '</ul>\n';
         halfRight = document.getElementById('halfRight');

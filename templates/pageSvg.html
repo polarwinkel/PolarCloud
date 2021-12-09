@@ -7,9 +7,7 @@
     <a onclick="pa.boolean('! WARNING !<br />really delete this?', 'delete');">delete</a>
 </nav>
 <div id="content">
-    <textarea oninput="svgPreview()" id="svgCode" rows="5" cols="72">
-{{ content|safe }}
-    </textarea>
+    <textarea oninput="svgPreview()" id="svgCode" rows="5" cols="72">{{ content|safe }}</textarea>
     <div id="svgView">
 {{ content|safe }}
     </div>
@@ -131,6 +129,25 @@
     <circle r="6" cx="7" cy="7" style="fill:none;stroke:blue;stroke-width:2"/>
     <path d="m 3,7 h 8" fill="none" stroke="blue" stroke-width="2"/>
 </symbol></xmp>
+            </td>
+        </tr>
+        <tr>
+            <td>Arrowhead</td>
+            <td><svg>
+<defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8", refY="3" orient="auto-start-reverse">
+        <polygon points="0 0,8 3,0 6, 2 3"/>
+    </marker>
+</defs>
+<line x1="" y1="50" x2="250" y2="50" stroke="#0a0" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/></xmp>
+            </svg></td>
+            <td>
+<xmp><defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8", refY="3" orient="auto-start-reverse">
+        <polygon points="0 0,8 3,0 6, 2 3"/>
+    </marker>
+</defs>
+<line x1="" y1="50" x2="250" y2="50" stroke="#0a0" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/></xmp>
             </td>
         </tr>
     </table>
