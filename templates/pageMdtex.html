@@ -110,6 +110,13 @@
         location.reload();
         //return response.json(); // parses JSON response into native JavaScript objects
     }
+    document.onkeydown = function(e){
+        if(e.ctrlKey && e.which === 83){ // Check for the Ctrl key being pressed, and if the key = [S] (83)
+            save();
+            e.preventDefault();
+            return false;
+        }
+    }
     function paOk(str) {
         if (str == 'delete') {
             deletePage();
