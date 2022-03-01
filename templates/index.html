@@ -24,6 +24,19 @@
 </div>
 <nav id="pagenav">
 </nav>
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" display="none">
+  </symbol>
+  <symbol id="plus" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="14" style="stroke-width:3;fill:none"/>
+    <polyline points="16,25 16,7" style="stroke-width:3;fill:none"/>
+    <polyline points="7,16 25,16" style="stroke-width:3;fill:none"/>
+  </symbol>
+  <symbol id="eye" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="4" style="fill:none;stroke-width:3"/>
+    <path d="M 2 15 A 20 30 0 0 0 30 15" style="fill:none;stroke-width:3"/>
+    <path d="M 2 17 A 20 30 0 0 1 30 17" style="fill:none;stroke-width:3"/>
+  </symbol>
+</svg>
 <div id="content">
     <div id="halfLeft">
         <h2>Search</h2>
@@ -58,8 +71,8 @@
             } else {
                 result += '<li>';
                 result += '<details><summary ondrop="drop(event)" ondragover="allowDrop(event)" id="'+subpath+key+'">';
-                result += key+' <a href="'+relroot+'_new/'+subpath+key+'/"><img src="{{ relroot }}_static/plus.svg" alt="add"/></a>';
-                result += ' <a href="'+relroot+subpath+key+'/"><img src="{{ relroot }}_static/eye.svg" alt="view"/></a>';
+                result += key+' <a href="'+relroot+'_new/'+subpath+key+'/"><svg width="0.8em" height="0.8em" stroke="currentColor"><use xlink:href="#plus" /></svg></a>';
+                result += ' <a href="'+relroot+subpath+key+'/"><svg width="0.8em" height="0.8em" stroke="currentColor"><use xlink:href="#eye" /></svg></a>';
                 result += '</summary><ul>';
                 result += renderFiletree(tree[key], subpath+key+'/');
                 result += '</ul></details></li>\n';
@@ -69,7 +82,7 @@
     }
     function loadFilelist() {
         var result = '<h2>File Tree</h2><ul>\n';
-        result += '<p ondrop="drop(event)" ondragover="allowDrop(event)" id="./">./<a href="'+relroot+'_new/."><img src="{{ relroot }}_static/plus.svg" alt="add"/></a></p>';
+        result += '<p ondrop="drop(event)" ondragover="allowDrop(event)" id="./">./<a href="'+relroot+'_new/."><svg width="0.8em" height="0.8em" stroke="currentColor"><use xlink:href="#plus" /></svg></a></p>';
         result += renderFiletree(filelist, '');
         result += '</ul>\n';
         halfRight = document.getElementById('halfRight');
