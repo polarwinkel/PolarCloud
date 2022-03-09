@@ -25,6 +25,10 @@ The secure-way: Use a reverse-proxy like nginx, Apache, LightHttpd, ... to add a
 
 The files in `data` will be shown in your cloud.
 
+### Dependencies
+
+On a Debian (Bullseye) the package `python3-flask` and `python3-markdown` will be required. On other systems install according packages, i.e. with pip.
+
 ## Limitations
 
 There is a tiny limitation for naming your files: Paths starting with `_` are reserved for internal use, and the meta-information is stored in sidecar-files (yaml-format) ending with `.pcsc`.

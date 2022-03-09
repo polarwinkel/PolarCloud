@@ -39,7 +39,7 @@ def index():
             mdtex = f.read()
     else:
         mdtex = '(create an `index.mdtex` to show its content here)'
-    content = mdtex2html.convert(mdtex)
+    content = mdtex2html.convert(mdtex, extensions)
     return render_template('index.html', relroot='./', filelist=filelist, content=content)
 
 @app.route('/_static/<path:path>')
@@ -70,7 +70,7 @@ def page(path):
                 mdtex = f.read()
         except FileNotFoundError:
             mdtex = '# 404 Error\n\nFile not found!'
-        content = mdtex2html.convert(mdtex)
+        content = mdtex2html.convert(mdtex, extensions)
         return render_template('pageMdtex.html', relroot=relroot, path=path, content=content, meta=meta)
     elif fileExt == '.svg':
         try:
@@ -88,7 +88,7 @@ def page(path):
         except IsADirectoryError:
             content = mdtex2html.convert('(this view is (still) just for renaming/deleting folders)')
             return render_template('pageDir.html', relroot=relroot, path=path, content=content)
-        content = mdtex2html.convert(mdtex)
+        content = mdtex2html.convert(mdtex, extensions)
         return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
 
 @app.route('/_download/<path:filename>', methods=['GET'])
