@@ -1,11 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<code>{{ path }}</code>
+<code id="path">{{ path }}</code>
 <nav id="pagenav">
     <a onclick="pa.input('Rename to:');">rename</a> | 
     <a onclick="pa.boolean('! WARNING !<br />really delete?', 'delete');">delete</a>
 </nav>
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" display="none">
+  </symbol>
+  <symbol id="plus" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="14" style="stroke-width:3;fill:none"/>
+    <polyline points="16,25 16,7" style="stroke-width:3;fill:none"/>
+    <polyline points="7,16 25,16" style="stroke-width:3;fill:none"/>
+  </symbol>
+  <symbol id="eye" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="4" style="fill:none;stroke-width:3"/>
+    <path d="M 2 15 A 20 30 0 0 0 30 15" style="fill:none;stroke-width:3"/>
+    <path d="M 2 17 A 20 30 0 0 1 30 17" style="fill:none;stroke-width:3"/>
+  </symbol>
+</svg>
 <div id="content">
 {{ content|safe }}
 </div>
@@ -15,10 +28,84 @@
     var path = '{{ path }}';
     var relroot = '{{ relroot }}';
     var deleteUrl = '{{ relroot }}_delete/{{ path }}';
+    var filelist = {{ filelist|safe }};
+    function setPathLinks() {
+        var ps = path.split('/');
+        pathLinks = ''
+        for (var i=0; i<ps.length; i++) {
+            var folder = './'+'../'.repeat(ps.length-i-1);
+            pathLinks += '<a href="'+folder+'">/'+ps[i]+'</a>';
+        }
+        document.getElementById('path').innerHTML = pathLinks;
+    }
+    setPathLinks();
     
-    function paOk(str) {
-        if (str == 'delete') {
+    function renderFiletree(tree, subpath) {
+        var result = '';
+        Object.keys(tree).forEach(function(key) {
+            if (key == '.') {
+                // show files:
+                Object.keys(tree["."]).forEach(function(subkey) {
+                    var value = tree["."][subkey];
+                    result += '<li>'
+                    result += '<a draggable="true" ondragstart="drag(event)" id="'+path+'/'+subpath+value.name+value.ext+'" href="'+subpath+value.name+value.ext+'">'+value.name+value.ext+'</a>'
+                    result += '</li>\n';
+                });
+            } else {
+                // folders:
+                result += '<li>';
+                result += '<details><summary ondrop="drop(event)" ondragover="allowDrop(event)" id="'+path+'/'+subpath+key+'">';
+                result += key+' <a href="'+relroot+'_new/'+path+'/'+subpath+key+'/"><svg width="0.8em" height="0.8em" stroke="currentColor"><use xlink:href="#plus" /></svg></a>';
+                result += ' <a href="'+relroot+path+'/'+subpath+key+'/"><svg width="0.8em" height="0.8em" stroke="currentColor"><use xlink:href="#eye" /></svg></a>';
+                result += '</summary><ul>';
+                result += renderFiletree(tree[key], subpath+key+'/');
+                result += '</ul></details></li>\n';
+            }
+        });
+        return result;
+    }
+    function loadFilelist() {
+        var result = '<h2>File Tree</h2><ul>\n';
+        result += '<p ondrop="drop(event)" ondragover="allowDrop(event)" id="'+path+'/">./<a href="'+relroot+'_new/'+path+'/."><svg width="0.8em" height="0.8em" stroke="currentColor"><use xlink:href="#plus" /></svg></a></p>';
+        result += renderFiletree(filelist, '');
+        result += '</ul>\n';
+        result += '<p><i>Hint: You can move files with drag-and-drop!</i></p>'
+        content = document.getElementById('content');
+        content.innerHTML = result;
+    }
+    loadFilelist();
+    function drag(event) {
+        event.dataTransfer.setData("filePath", event.target.id);
+    }
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+    async function move(m) {
+        var moveUrl = relroot+'_move/'+JSON.parse(m).filePath;
+        const response = await fetch(moveUrl, {
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: m
+        });
+        location.reload();
+    }
+    function drop(event) {
+        event.preventDefault();
+        var source = event.dataTransfer.getData('filePath');
+        var dest = event.target.id;
+        var m = {'filePath':source, 'destPath':dest};
+        pa.boolean('Move <code>'+source+'</code> to <code>'+dest+'</code> ?', JSON.stringify(m));
+    }
+    function paOk(message) {
+        if (message == 'delete') {
             deletePage();
+        } else {
+            move(message);
         }
     }
     function paNo(str) {

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<code>{{ path }}</code>
+<code id="path">{{ path }}</code>
 <nav id="pagenav">
     <a onclick="pa.input('Rename to:');">rename</a> | 
     <a onclick="pa.boolean('! WARNING !<br />really delete?', 'delete');">delete</a>
@@ -20,6 +20,18 @@
     var updateMetaUrl = '{{ relroot }}_updateMeta/{{ path }}';
     var deleteUrl = '{{ relroot }}_delete/{{ path }}';
     var meta = {{ meta|safe }};
+    
+    function setPathLinks() {
+        var ps = path.split('/');
+        pathLinks = ''
+        for (var i=0; i<ps.length; i++) {
+            var folder = './'+'../'.repeat(ps.length-i-1);
+            pathLinks += '<a href="'+folder+'"><code>/</code></a>';
+            pathLinks += '<a href="'+folder+ps[i]+'">'+ps[i]+'</a>';
+        }
+        document.getElementById('path').innerHTML = pathLinks;
+    }
+    setPathLinks();
     
     function showMeta() {
         var m = document.getElementById('meta');

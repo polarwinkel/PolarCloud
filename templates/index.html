@@ -146,7 +146,7 @@
         event.preventDefault();
     }
     async function move(m) {
-        var moveUrl = relroot+'_move/'+JSON.parse(m).filePath;;
+        var moveUrl = relroot+'_move/'+JSON.parse(m).filePath;
         const response = await fetch(moveUrl, {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin

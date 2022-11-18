@@ -46,10 +46,6 @@ def index():
 def send_static(path):
     return send_from_directory('static', path)
 
-#@app.route('/data', methods=['GET'])
-#def sendData():
-#    return render_template('data.html', relroot='./')
-
 @app.route('/<path:path>', methods=['GET'])
 def page(path):
     '''show wiki-page'''
@@ -86,8 +82,11 @@ def page(path):
         except FileNotFoundError:
             mdtex = '# 404 Error\n\nFile not found!'
         except IsADirectoryError:
-            content = mdtex2html.convert('(this view is (still) just for renaming/deleting folders)')
-            return render_template('pageDir.html', relroot=relroot, path=path, content=content)
+            if path.endswith('/'):
+                path = path[:-1]
+            files = load.loadFolder(folder+'/'+path)
+            filelist = json.dumps(files)
+            return render_template('pageDir.html', relroot=relroot, path=path, content='loading folder...', filelist=filelist)
         content = mdtex2html.convert(mdtex, extensions)
         return render_template('pageFile.html', relroot=relroot, path=path, content=content, meta=meta)
 
