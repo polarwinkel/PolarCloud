@@ -4,11 +4,26 @@
 <code id="path">{{ path }}</code>
 <nav id="pagenav">
     <a onclick="edit()">edit</a> | 
+    <a onclick="liveEdit()" id="liveEditLink">liveEdit</a> | 
     <a onclick="pa.input('Rename to:');">rename</a> | 
     <a onclick="pa.boolean('! WARNING !<br />really delete?', 'delete');">delete</a>
 </nav>
-<div id="content">
+<style>
+div#container {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap:wrap;
+    align-items: stretch;
+    justify-content: space-evenly;
+    padding: 0.4rem;
+    margin: 0.2em;
+    border:0px solid black;
+}
+</style>
+<div id="container" style="width:100%">
+    <div id="content" style="width:100%">
 {{ content|safe }}
+    </div>
 </div>
 <div id="meta">
     <p>Loading meta-information...</p>
@@ -99,17 +114,53 @@
         m.innerHTML = out;
     }
     
-    const edit = async () => {
-        const response = await fetch(sourceUrl);
-        const source = await response.text();
-        content = '<div style="clear:both;"><textarea path="source" id="source" class="formdata" rows="20">\n';
-        content = content+source;
-        content = content+'</textarea></div>';
-        content = content+'<div style="clear:both;"><input type="submit" value="save" onclick="save()"></div>\n';
-        document.getElementById('content').innerHTML = content;
+    async function edit () {
+        var response = await fetch(sourceUrl);
+        var source = await response.text();
+        content = '<div id="content" style="width:100%">';
+        content += '<div style="clear:both;"><textarea path="source" id="source" class="formdata" rows="20">\n';
+        content += source;
+        content += '</textarea></div>';
+        content += '<div style="clear:both;"><input type="submit" value="save" onclick="save()"></div>\n';
+        content += '</div>';
+        document.getElementById('container').innerHTML = content;
+    }
+    async function mdtex2html(mdtex) {
+        var response = await fetch('{{ relroot }}_mdtex2html', {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/mdtex'
+            },
+            body: mdtex
+        });
+        return response.text();
+    }
+    async function render() {
+        var mdtex = document.getElementById('source').value;
+        var html = await mdtex2html(mdtex);
+        document.getElementById('content').innerHTML = html;
+    }
+    async function liveEdit() {
+        var response = await fetch(sourceUrl);
+        var source = await response.text();
+        var cont = document.getElementById('content').innerHTML;
+        var mediaQuery = window.matchMedia('only screen and (max-width: 980px)');
+        if (mediaQuery.matches) {
+            var content = '<div id="content" style="width:100%">';
+        } else {
+            var content = '<div id="content" style="width:65%">';
+        }
+        content += cont;
+        content += '</div>';
+        content += '<textarea id="source" oninput="render()" style="width:33%;">'
+        content += source;
+        content += '</textarea>';
+        content += '<div style="clear:both;"><input type="submit" value="save" onclick="save()"></div>\n';
+        content += '</div>';
+        document.getElementById('container').innerHTML = content;
     }
     async function save() {
-        const response = await fetch(updateUrl, {
+        var response = await fetch(updateUrl, {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
@@ -138,7 +189,7 @@
         pa.message('Ok, nothing happened!');
     }
     async function deletePage() {
-        const response = await fetch(deleteUrl, {
+        var response = await fetch(deleteUrl, {
             method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
         });
         window.location.href = relroot;
@@ -147,7 +198,7 @@
         var desc = document.getElementById('description').value;
         var keyw = document.getElementById('keywords').value;
         var m = {'description':desc, 'keywords':keyw};
-        const response = await fetch(updateMetaUrl, {
+        var response = await fetch(updateMetaUrl, {
             method: 'PUT', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'default', // *default, no-cache, reload, force-cache, only-if-cached
