@@ -12,6 +12,7 @@
         <option value="mdtex" selected>mdtex</option>
         <option value="svg">svg</option>
         <option value="file">file upload</option>
+        <option value="imgUrl">image url upload</option>
         <option value="folder">folder</option>
     </select>
 </div>
@@ -19,6 +20,11 @@
 <h3>Content:</h3>
 <div style="clear:both;" id="dsource"><textarea path="source" id="source" class="formdata" rows="20"></textarea></div>
 <div style="clear:both;"><input type="file" id="file" name="file" style="display: none;" /></div>
+<div style="clear:both;" id="imgUrlOption" style="display:none">
+    <p>Image-URL-Upload</p><input type="text" id="imgUrl" >
+    <img id="imgUrlUpload" src="#" alt="url upload image" style="display:block;" />
+    <button onclick="imgUrlUpload()">Load Image</button>
+</div>
 <label for="description">Description:</label>
 <textarea name="description" id="description" class="formdata" rows="5"></textarea>
 <label for="keywords">Keywords:</label>
@@ -41,26 +47,54 @@
         if (type=='mdtex'){
             document.getElementById('dsource').style.display = 'block';
             document.getElementById('file').style.display = 'none';
+            document.getElementById('imgUrlOption').style.display = 'none';
             document.getElementById('description').style.display = 'block';
             document.getElementById('keywords').style.display = 'block';
             document.getElementById('source').value = '';
         } else if (type=='svg'){
             document.getElementById('dsource').style.display = 'block';
             document.getElementById('file').style.display = 'none';
+            document.getElementById('imgUrlOption').style.display = 'none';
             document.getElementById('description').style.display = 'block';
             document.getElementById('keywords').style.display = 'block';
             document.getElementById('source').value = defaultSvg;
         } else if (type=='file'){
             document.getElementById('dsource').style.display = 'none';
             document.getElementById('file').style.display = 'block';
+            document.getElementById('imgUrlOption').style.display = 'none';
+            document.getElementById('description').style.display = 'block';
+            document.getElementById('keywords').style.display = 'block';
+        } else if (type=='imgUrl'){
+            document.getElementById('dsource').style.display = 'none';
+            document.getElementById('file').style.display = 'none';
+            document.getElementById('imgUrlOption').style.display = 'block';
             document.getElementById('description').style.display = 'block';
             document.getElementById('keywords').style.display = 'block';
         } else if (type=='folder'){
             document.getElementById('dsource').style.display = 'none';
             document.getElementById('file').style.display = 'none';
+            document.getElementById('imgUrlOption').style.display = 'none';
             document.getElementById('description').style.display = 'none';
             document.getElementById('keywords').style.display = 'none';
         }
+    }
+    
+    var imgUrlFile;
+    function imgUrlUpload() {
+        var url = document.getElementById('imgUrl').value;
+        var imgPreview = document.getElementById('imgUrlUpload');
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            //var reader = new FileReader();
+            //var img = reader.readAsDataURL(xhr.response);
+            var img = xhr.response;
+            var filename = url.split('/').pop()
+            imgUrlFile = new File([xhr.response], filename, {type: img.type,});
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
+        imgPreview.src = url;
     }
     
     async function save() {
@@ -73,7 +107,7 @@
         send['name'] = name;
         send['description'] = description;
         send['keywords'] = keywords;
-        if (type != 'file') {
+        if (type != 'file' && type != 'imgUrl') {
             var source = document.getElementById('source').value;
             send['source'] = source;
             const response = await fetch(createUrl, {
@@ -91,7 +125,13 @@
             });
         } else {
             var formData = new FormData();
-            var file = document.getElementById('file').files[0];
+            if (type == 'file') {
+                var file = document.getElementById('file').files[0];
+            }
+            else {
+                var file=imgUrlFile;
+            }
+            send['type'] = 'file';
             formData.append('name', name);
             formData.append('description', description);
             formData.append('keywords', keywords);
