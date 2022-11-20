@@ -21,9 +21,9 @@
 <div style="clear:both;" id="dsource"><textarea path="source" id="source" class="formdata" rows="20"></textarea></div>
 <div style="clear:both;"><input type="file" id="file" name="file" style="display: none;" /></div>
 <div style="clear:both;" id="imgUrlOption" style="display:none">
-    <p>Image-URL-Upload</p><input type="text" id="imgUrl" >
-    <img id="imgUrlUpload" src="#" alt="url upload image" style="display:block;" />
+    <p>Image-URL:</p><input type="text" id="imgUrl" style="width:100%" />
     <button onclick="imgUrlUpload()">Load Image</button>
+    <img id="imgUrlUpload" src="#" alt="[preview uploaded image]" style="display:block;" />
 </div>
 <label for="description">Description:</label>
 <textarea name="description" id="description" class="formdata" rows="5"></textarea>
@@ -90,11 +90,11 @@
             var img = xhr.response;
             var filename = url.split('/').pop()
             imgUrlFile = new File([xhr.response], filename, {type: img.type,});
+            imgPreview.src = url;
         };
         xhr.open('GET', url);
         xhr.responseType = 'blob';
         xhr.send();
-        imgPreview.src = url;
     }
     
     async function save() {
