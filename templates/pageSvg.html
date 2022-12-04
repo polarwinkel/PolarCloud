@@ -5,7 +5,7 @@
 <nav id="pagenav">
     <a onclick="pa.input('Rename to:');">rename</a> | 
     <a onclick="pa.boolean('! WARNING !<br />really delete this?', 'delete');">delete</a> | 
-    <a href="_download/{{ path }}">download</a>
+    <a href="{{ relroot }}_download/{{ path }}">download</a>
 </nav>
 <div id="content">
     <textarea oninput="svgPreview()" id="svgCode" rows="5" cols="72">{{ content|safe }}</textarea>
