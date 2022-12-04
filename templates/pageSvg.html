@@ -4,7 +4,8 @@
 <code id="path">{{ path }}</code>
 <nav id="pagenav">
     <a onclick="pa.input('Rename to:');">rename</a> | 
-    <a onclick="pa.boolean('! WARNING !<br />really delete this?', 'delete');">delete</a>
+    <a onclick="pa.boolean('! WARNING !<br />really delete this?', 'delete');">delete</a> | 
+    <a href="_download/{{ path }}">download</a>
 </nav>
 <div id="content">
     <textarea oninput="svgPreview()" id="svgCode" rows="5" cols="72">{{ content|safe }}</textarea>
@@ -130,7 +131,7 @@
             <td>Arrowhead</td>
             <td><svg>
 <defs>
-    <marker id="arrow" markerWidth="5" markerHeight="6" refX="4", refY="3" orient="auto-start-reverse">
+    <marker id="arrow" markerWidth="5" markerHeight="6" refX="4" refY="3" orient="auto-start-reverse">
         <polygon points="0 0,5 3,0 6, 2 3"/>
     </marker>
 </defs>
@@ -138,7 +139,7 @@
             </svg></td>
             <td>
 <xmp><defs>
-    <marker id="arrow" markerWidth="5" markerHeight="6" refX="4", refY="3" orient="auto-start-reverse">
+    <marker id="arrow" markerWidth="5" markerHeight="6" refX="4" refY="3" orient="auto-start-reverse">
         <polygon points="0 0,5 3,0 6, 2 3"/>
     </marker>
 </defs>
