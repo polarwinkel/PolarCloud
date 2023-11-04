@@ -11,12 +11,14 @@ from jinja2 import Template
 import mdtex2html
 from modules import settingsio, load
 from datetime import datetime
-
-folder='data' # TODO: include in settings!
+from pathlib import Path
 
 # global settings:
 
 setfile = 'settings.yaml'
+
+folder='data' # TODO: include in settings!
+Path(folder).mkdir(parents=True, exist_ok=True)
 
 app = Flask(__name__)
 settings = settingsio.settingsIo(setfile)
